@@ -2,7 +2,7 @@ import { createWorker } from 'tesseract.js';
 
 export default async function ocr(base64Image: string) {
   const url = `https://api.ocr.space/parse/image`;
-console.log(base64Image)
+
   const myHeaders = new Headers();
   myHeaders.append('apikey', 'helloworld');
 

@@ -87,7 +87,7 @@ const MainScreen = () => {
           </div>
 
           <ScanButton
-            onClick={handleCombinedClick}
+            onClick={() => setOpen(true)}
             text={text === '' ? 'Skanuj produkt' : 'Skanuj nowy'}
             disabled={takePhoto && text === ''}
           />
@@ -131,6 +131,7 @@ const MainScreen = () => {
               </div>
               <div className={styles.scan_list}>
                 <Call />
+                <button onClick={handleTahePhoto}>zdjęcie</button>
               </div>
             </div>
           </motion.div>

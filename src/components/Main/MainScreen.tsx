@@ -37,13 +37,12 @@ const MainScreen = () => {
     }
   }
 
-  const handleCombinedClick = () => {
+  const handleTahePhoto = () => {
     if (text === '') {
       setTakePhoto(true);
     } else {
       handleResetOcr();
     }
-    setOpen(true);
   };
 
   const handleResetOcr = () => {
@@ -83,19 +82,21 @@ const MainScreen = () => {
           </div>
 
           <ScanButton
-            onClick={handleCombinedClick}
+            onClick={() => setOpen(true)}
             text={text === '' ? 'Skanuj produkt' : 'Skanuj nowy'}
             disabled={takePhoto && text === ''}
           />
         </div>
       )}
-      <CapturePhoto
-        takePhoto={takePhoto}
-        setPhotoReady={setPhotoReady}
-        getText={getText}
-        setText={setText}
-        resetOcr={resetOcr}
-      />
+      {open && (
+        <CapturePhoto
+          takePhoto={takePhoto}
+          setPhotoReady={setPhotoReady}
+          getText={getText}
+          setText={setText}
+          resetOcr={resetOcr}
+        />
+      )}
       <motion.div
         animate={
           open
@@ -126,6 +127,7 @@ const MainScreen = () => {
               </div>
               <div className={styles.scan_list}>
                 <Call />
+                <button onClick={handleTahePhoto}>zdjęcie</button>
               </div>
             </div>
           </motion.div>

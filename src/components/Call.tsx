@@ -13,7 +13,7 @@ export const Call = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: "TUTAJ WKLEJCIE KLUCZ Z ENVA",
+          Authorization: `${process.env.NEXT_PUBLIC_API_KEY_GPT}`,
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",

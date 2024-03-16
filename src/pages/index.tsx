@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.scss'
+import CapturePhoto from '@/components/CapturePhoto/CapturePhoto'
 
 const inter = Inter({
 	subsets: ['latin'],
@@ -22,6 +23,8 @@ export default function Home() {
 				<h1>zdrowe info</h1>
 				<button>jakiśbutton do aparatu</button>
 				<p>nie wiem pomyśl</p>
+
+				<CapturePhoto />
 			</main>
 		</>
 	)

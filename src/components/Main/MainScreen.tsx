@@ -30,7 +30,7 @@ const MainScreen = () => {
     setText('');
     setOpen(false);
   };
-  console.log(takePhoto && text === '')
+
   return (
     <main className={styles.wrapper}>
       <Header />

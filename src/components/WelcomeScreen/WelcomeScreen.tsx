@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../Header/Header'; // Upewnij się, że ścieżka jest poprawna
-import MainScreen from '../Main/MainScreen'; // Upewnij się, że ścieżka jest poprawna
+import Header from '../Header/Header'; 
+import MainScreen from '../Main/MainScreen'; 
 import { motion } from 'framer-motion';
 import styles from './WelcomeScreen.module.scss';
 
@@ -9,14 +9,13 @@ const WelcomeScreen = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShowContent(true); // Po 3 sekundach ustaw stan na true, aby pokazać główną zawartość
+      setShowContent(true); 
     }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
 
   if (showContent) {
-    // Jeśli `showContent` jest `true`, pokazujemy główną zawartość
     return (
       <>
         <Header />
@@ -24,8 +23,6 @@ const WelcomeScreen = () => {
       </>
     );
   }
-
-  // W przeciwnym przypadku, pokazujemy animowany ekran powitalny
   return (
     <motion.div
       className={styles.animationContainer}

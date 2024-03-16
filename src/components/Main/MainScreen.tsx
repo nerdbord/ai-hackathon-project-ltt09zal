@@ -1,13 +1,35 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './MainScreen.module.scss';
 import Header from '../Header/Header';
 import ScanButton from '../ScanButton/ScanButton';
 import { motion, AnimatePresence } from 'framer-motion';
+import CapturePhoto from '../CapturePhoto/CapturePhoto';
 
 const MainScreen = () => {
   const [open, setOpen] = useState<boolean>(false);
+  // For camera and ocr handling:
+  const [resetOcr, setResetOcr] = useState<boolean>(false);
+  const [takePhoto, setTakePhoto] = useState<boolean>(false);
+  const [photoReady, setPhotoReady] = useState<boolean>(false);
+  const [getText, setGetText] = useState<boolean>(false);
+  const [text, setText] = useState<string>('');
 
+  useEffect(() => {
+    photoReady && setGetText(true);
+  }, [photoReady]);
+
+  useEffect(() => {
+    text !== "" && setOpen(true);
+  }, [text]);
+
+  const handleResetOcr = () => {
+    setResetOcr(!resetOcr);
+    setTakePhoto(false);
+    setGetText(false);
+    setText('')
+    setOpen(false);
+  }
   return (
     <main className={styles.wrapper}>
       <Header />
@@ -32,7 +54,18 @@ const MainScreen = () => {
             <p>Upewnij się, że tekst jest czytelny, a zdjęcie ostre.</p>
           </div>
         </div>
-        <ScanButton onClick={() => setOpen(!open)} />
+        <CapturePhoto
+          takePhoto={takePhoto}
+          setPhotoReady={setPhotoReady}
+          getText={getText}
+          setText={setText}
+          resetOcr={resetOcr}
+        />
+        <ScanButton
+          onClick={() =>
+            text === '' ? setTakePhoto(true) : handleResetOcr()
+          }
+        />
       </div>
       <motion.div
         animate={
@@ -59,7 +92,7 @@ const MainScreen = () => {
             className={styles.scan_container}
           >
             <div className={styles.scan_content}>
-              <div className={styles.scan_close} onClick={() => setOpen(!open)}>
+              <div className={styles.scan_close} onClick={() => setOpen(false)}>
                 close
               </div>
               <div className={styles.scan_list}>

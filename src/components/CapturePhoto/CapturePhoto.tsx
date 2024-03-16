@@ -7,13 +7,47 @@ import ocr from '@/utils/ocr';
 
 type Base64 = string;
 
-const CapturePhoto = (): JSX.Element => {
+interface Props {
+  takePhoto: boolean;
+  setPhotoReady: (value: boolean) => void;
+  getText: boolean;
+  setText: (value: string) => void;
+  resetOcr: boolean;
+  enableControls?: boolean;
+}
+
+const CapturePhoto: React.FC<Props> = ({
+  takePhoto,
+  setPhotoReady,
+  getText,
+  setText,
+  resetOcr,
+  enableControls = false,
+}) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [base64img, setBase64img] = useState<Base64>('');
-  const [testbase64img, setTestBase64img] = useState<Base64>('');
   const [textData, setTextData] = useState<string>('');
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    isCameraOpen && handleTakePhoto();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [takePhoto]);
+
+  useEffect(() => {
+    base64img && analizePhoto();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getText]);
+
+  useEffect(() => {
+    setTextData('');
+    setText(''); //parent reset
+    setBase64img('');
+    setPhotoReady(false); //parent reset
+    setIsCameraOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetOcr]);
 
   useEffect(() => {
     let videoElement = videoRef.current;
@@ -44,10 +78,14 @@ const CapturePhoto = (): JSX.Element => {
           mediaStream.getTracks().forEach((track) => track.stop());
         }
       }
+      setPhotoReady(false);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCameraOpen]);
 
-  const takePhoto = async (videoElement: HTMLVideoElement): Promise<Base64> => {
+  const takePhotoHandler = async (
+    videoElement: HTMLVideoElement
+  ): Promise<Base64> => {
     try {
       const canvasElement = document.createElement('canvas');
       const canvasContext = canvasElement.getContext('2d');
@@ -74,8 +112,9 @@ const CapturePhoto = (): JSX.Element => {
     setIsCameraOpen(false);
     try {
       if (videoRef.current) {
-        const imageData: Base64 = await takePhoto(videoRef.current);
+        const imageData: Base64 = await takePhotoHandler(videoRef.current);
         setBase64img(imageData);
+        setPhotoReady(true);
       }
     } catch (error) {
       console.error('Error taking photo:', error);
@@ -85,9 +124,9 @@ const CapturePhoto = (): JSX.Element => {
   const analizePhoto = async (): Promise<void> => {
     setLoading(true);
     try {
-      const text = await ocr(base64img);
-      setTextData(text);
-      // setTestBase64img(data.img);
+      const textOCR = await ocr(base64img);
+      setText(textOCR);
+      setTextData(textOCR); //displays inside component
     } catch (error) {
       console.error('Error fetching OCR results:', error);
     } finally {
@@ -134,30 +173,24 @@ const CapturePhoto = (): JSX.Element => {
             />
             <LoaderSpinner show={isLoading} onImage />
           </div>
-          {/* Remove false to show processed image as iamge base for OCR */}
-          {false && testbase64img && (
-            <Image
-              className={styles.preview}
-              src={testbase64img}
-              width={100}
-              height={100}
-              alt="Taken photo"
-            />
+
+          {enableControls && (
+            <div className={styles.buttonsContainer}>
+              <button
+                onClick={() => {
+                  setIsCameraOpen(true);
+                  setBase64img('');
+                  setTextData('');
+                }}
+              >
+                Zrób nowe
+              </button>
+              <button onClick={analizePhoto} disabled={isLoading}>
+                Analizuj
+              </button>
+            </div>
           )}
-          <div className={styles.buttonsContainer}>
-            <button
-              onClick={() => {
-                setIsCameraOpen(true);
-                setBase64img('');
-                setTextData('');
-              }}
-            >
-              Zrób nowe
-            </button>
-            <button onClick={analizePhoto} disabled={isLoading}>
-              Analizuj
-            </button>
-          </div>
+
           <code>{textData}</code>
         </div>
       )}

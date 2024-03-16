@@ -5,14 +5,29 @@ export const Call = () => {
   const [response, setResponse] = useState('');
 
   const handleSubmit = async () => {
+    const systemPrompt = "You are a helpful assistant.";
+    const userPrompt = input;
+
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('https://training.nerdbord.io/api/v1/openai/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${process.env.API_KEY_GPT}`,
+          Authorization: "TUTAJ WKLEJCIE KLUCZ Z ENVA",
         },
-        body: JSON.stringify({ text: input }),
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              "role": "system",
+              "content": systemPrompt,
+            },
+            {
+              "role": "user",
+              "content": userPrompt,
+            },
+          ],
+        }),
       });
 
       if (!res.ok) {
@@ -20,7 +35,7 @@ export const Call = () => {
       }
 
       const data = await res.json();
-      setResponse(data.answer);
+      setResponse(data.choices[0].message.content);
     } catch (error) {
       console.error('Error calling GPT API:', error);
       setResponse('Error processing your request');
@@ -29,7 +44,7 @@ export const Call = () => {
 
   return (
     <div style={{marginTop: '20px'}}>
-        <span>napisz do czata</span>
+      <span>napisz do czata</span>
       <input
         type="text"
         value={input}
@@ -39,4 +54,4 @@ export const Call = () => {
       <p>Odpowiedź: {response}</p>
     </div>
   );
-}
+};

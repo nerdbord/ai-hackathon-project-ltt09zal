@@ -19,17 +19,19 @@ const MainScreen = () => {
               <span className={styles.intro_span}>?</span>
             </strong>
           </h2>
-          <div className={styles.intro_txt}>
-            <div className={styles.dot}></div>
-            <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
-          </div>
-          <div className={styles.intro_txt}>
-            <div className={styles.dot}></div>
-            <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
-          </div>
-          <div className={styles.intro_txt}>
-            <div className={styles.dot}></div>
-            <p>Upewnij się, że tekst jest czytelny, a zdjęcie ostre.</p>
+          <div className={styles.stepsWrapper}>
+            <div className={styles.intro_txt}>
+              <div className={styles.dot}></div>
+              <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
+            </div>
+            <div className={styles.intro_txt}>
+              <div className={styles.dot}></div>
+              <p>Upewnij się, że tekst jest czytelny, a zdjęcie ostre.</p>
+            </div>
+            <div className={styles.intro_txt}>
+              <div className={styles.dot}></div>
+              <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
+            </div>
           </div>
         </div>
         <ScanButton onClick={() => setOpen(!open)} />

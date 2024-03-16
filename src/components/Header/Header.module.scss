@@ -7,6 +7,29 @@
   background-color: #0d1117;
 }
 
+.imageSmall {
+position: absolute;
+top: 5px;
+left: 15px;
+img {
+  width: 60px;
+  height: 60px;
+}
+}
+
+.hidden {
+  display: none;
+}
+
+.headerText {
+  position: absolute;
+top: 28px;
+right: 15px;
+color: #f4f4f4;
+font-size: 20;
+font-weight: 600;
+}
+
 .image {
   display: flex;
   align-items: center;

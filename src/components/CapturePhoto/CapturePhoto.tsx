@@ -18,7 +18,8 @@ const CapturePhoto = (): JSX.Element => {
       try {
         if (videoElement) {
           const mediaStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
+            video: { facingMode: { ideal: 'environment' } },
+            audio: false,
           });
           videoElement.srcObject = mediaStream;
           videoElement.play();
@@ -79,9 +80,8 @@ const CapturePhoto = (): JSX.Element => {
     }
   };
 
-
   const analizePhoto = async (): Promise<void> => {
-    const text = await ocr(photoData)
+    const text = await ocr(photoData);
     setTextData(text);
     //gpt request
   };

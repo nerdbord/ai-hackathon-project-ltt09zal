@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Buffer } from 'buffer';
 import sharp from 'sharp';
-import { createWorker } from 'tesseract.js';
 
 type Data = {
   text?: string;
@@ -9,7 +8,7 @@ type Data = {
   img?: string;
 };
 
-export default async function ocrHandler(
+export default async function processImage(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
@@ -36,23 +35,10 @@ export default async function ocrHandler(
     image.threshold(90);
     const processedImg = await image.toBuffer();
 
-    // Recognize text using Tesseract OCR
-    const worker = await createWorker('pol+eng');
-    await worker.setParameters({
-      tessedit_char_whitelist:
-        '0123456789aąbcćdeęfghijklłmnńoóprsśtuwvyzźżAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSSTUWVYZŹŻ -:,.?!/',
-    });
-
-    const {
-      data: { text },
-    } = await worker.recognize(processedImg);
-    await worker.terminate();
-
     const base64Img =
       'data:image/png;base64,' + processedImg.toString('base64');
 
     res.status(200).json({
-      text: text ? text : 'Nic nie widzę w tym chmurzu',
       img: base64Img,
     });
   } catch (error) {

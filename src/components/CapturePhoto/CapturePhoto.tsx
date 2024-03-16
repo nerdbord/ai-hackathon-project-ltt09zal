@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styles from './CapturePhoto.module.scss';
 import Camera from '../icons/Camera';
 import Image from 'next/image';
+import { createWorker } from 'tesseract.js';
 import LoaderSpinner from '../LoaderSpinner/LoaderSpinner';
 
 type Base64 = string;
@@ -84,7 +85,8 @@ const CapturePhoto = (): JSX.Element => {
   const analizePhoto = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await fetch('/api/ocr', {
+      // Preprocess image
+      const response = await fetch('/api/process-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -95,9 +97,20 @@ const CapturePhoto = (): JSX.Element => {
       if (!response.ok) {
         throw new Error(`API request failed with status: ${response.status}`);
       }
-
       const data = await response.json();
-      setTextData(data.text || '');
+
+      // Recognize text using Tesseract OCR
+      const worker = await createWorker();
+      await worker.setParameters({
+        tessedit_char_whitelist:
+          '0123456789aąbcćdeęfghijklłmnńoóprsśtuwvyzźżAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSSTUWVYZŹŻ -:,.?!/',
+      });
+      const {
+        data: { text },
+      } = await worker.recognize(data.img);
+      await worker.terminate();
+
+      setTextData(text);
       setTestBase64img(data.img);
     } catch (error) {
       console.error('Error fetching OCR results:', error);
@@ -111,7 +124,7 @@ const CapturePhoto = (): JSX.Element => {
     <div className={styles.container}>
       {base64img === '' ? (
         <>
-        {/* View with open camera - ready to take a shot! */}
+          {/* View with open camera - ready to take a shot! */}
           {isCameraOpen ? (
             <div
               className={styles.container}

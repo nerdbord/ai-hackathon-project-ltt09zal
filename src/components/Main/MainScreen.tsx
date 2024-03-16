@@ -20,16 +20,17 @@ const MainScreen = () => {
   }, [photoReady]);
 
   useEffect(() => {
-    text !== "" && setOpen(true);
+    text !== '' && setOpen(true);
   }, [text]);
 
   const handleResetOcr = () => {
     setResetOcr(!resetOcr);
     setTakePhoto(false);
     setGetText(false);
-    setText('')
+    setText('');
     setOpen(false);
-  }
+  };
+  console.log(takePhoto && text === '')
   return (
     <main className={styles.wrapper}>
       <Header />
@@ -64,9 +65,9 @@ const MainScreen = () => {
           resetOcr={resetOcr}
         />
         <ScanButton
-          onClick={() =>
-            text === '' ? setTakePhoto(true) : handleResetOcr()
-          }
+          onClick={() => (text === '' ? setTakePhoto(true) : handleResetOcr())}
+          text={text === '' ? 'Skanuj produkt' : 'Skanuj nowy'}
+          disabled={takePhoto && text === ''}
         />
       </div>
       <motion.div

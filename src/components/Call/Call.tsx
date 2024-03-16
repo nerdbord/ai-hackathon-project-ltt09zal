@@ -3,13 +3,13 @@ import styles from './Call.module.scss';
 
 export const Call = () => {
   const [input, setInput] = useState('');
-  const [response, setResponse] = useState('');
+  const [basicResponse, setBasicResponse] = useState('');
   const [detailResponse, setDetailResponse] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [followUpResponse, setFollowUpResponse] = useState('');
+  const [loadingBasic, setLoadingBasic] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [loadingFollowUp, setLoadingFollowUp] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [queryCount, setQueryCount] = useState(0);
-  const [isFirstResponseHidden, setIsFirstResponseHidden] = useState(false);
 
   const fetchGPTResponse = async (
     prompt: string,
@@ -58,102 +58,102 @@ export const Call = () => {
   const ingredients =
     'przecier pomidorowy 62%, cukier, ocet, sól, skrobia kukurydziana modyfikowana, aromat naturalny. Produkt może zawierać seler.';
 
-  const handleIngredientsSubmit = () => {
-    if (queryCount === 0) {
-      const basicPrompt = `Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
-      fetchGPTResponse(basicPrompt, setResponse, setLoading);
+  const handleBasicIngredientsSubmit = () => {
+    const basicPrompt = `Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
+    fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
+  };
 
+  const handleDetailIngredientsSubmit = () => {
       const detailPrompt = `Jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
       fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
-
-      setQueryCount(1);
-    }
   };
 
-  const handleShowDetails = () => {
-    setShowDetails(true);
-    setQueryCount(2);
-    setIsFirstResponseHidden(true);
-  };
-
-  const handleQuestionSubmit = () => {
-    if (queryCount === 2 && input) {
-      const detailQuestionPrompt = `Opierając się na poprzedniej odpowiedzi dotyczącej szczegółów: ${detailResponse}, użytkownik pyta: "${input}". Proszę udzielić krótkiej odpowiedzi.`;
-      fetchGPTResponse(detailQuestionPrompt, setResponse, setLoading);
-      setShowDetails(false);
-      setQueryCount(3);
+  const handleFollowUpQuestionSubmit = () => {
+    if (input) {
+      const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje: ${detailResponse}. Użytkownik pyta: "${input}". Proszę udzielić odpowiedzi.`;
+      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
       setInput('');
     }
   };
 
+  const testowo = () => {
+    handleBasicIngredientsSubmit();
+    handleDetailIngredientsSubmit();
+  };
   const handleReset = () => {
-    setResponse('');
+    setBasicResponse('');
     setDetailResponse('');
+    setFollowUpResponse('');
     setShowDetails(false);
-    setQueryCount(0);
     setInput('');
-    setLoading(false);
+    setLoadingBasic(false);
     setLoadingDetails(false);
-    setIsFirstResponseHidden(false);
+    setLoadingFollowUp(false);
   };
 
   return (
     <div className={styles.callContainer}>
-      {queryCount === 0 && (
-        <button
-          onClick={handleIngredientsSubmit}
-          disabled={loading || loadingDetails}
-        >
-          SKŁAD
-        </button>
-      )}
+      <button
+        onClick={testowo}
+        disabled={loadingBasic || loadingDetails || loadingFollowUp}
+      >
+        SKŁAD
+      </button>
 
       <div className={styles.responseContainer}>
-        {loading || loadingDetails ? (
+        {loadingBasic ? (
           <div className={styles.spinner}>Loading...</div>
         ) : (
+          basicResponse &&
+          !followUpResponse && (
+            <p className={styles.response}>{basicResponse}</p>
+          )
+        )}
+
+        {showDetails && !followUpResponse && (
           <>
-            {response && !isFirstResponseHidden && (
-              <p className={styles.response}>{response}</p>
+            {loadingDetails ? (
+              <div className={styles.spinner}>Loading...</div>
+            ) : (
+              detailResponse &&
+              !followUpResponse && (
+                <p className={styles.response}>{detailResponse}</p>
+              )
             )}
 
-            {queryCount === 3 && <p className={styles.response}>{response}</p>}
-
-            {queryCount >= 1 && !showDetails && (
-              <button
-                className={styles.button}
-                onClick={handleShowDetails}
-                disabled={loadingDetails}
-              >
-                {loadingDetails ? 'Ładowanie...' : 'Szczegóły'}
-              </button>
-            )}
-
-            {showDetails && detailResponse && (
-              <p className={styles.response}>{detailResponse}</p>
-            )}
-
-            {queryCount === 2 && (
-              <>
-                <input
-                  className={styles.inputField}
-                  type="text"
-                  placeholder="Dopytaj o szczegóły"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                />
-                <button onClick={handleQuestionSubmit} disabled={loading}>
-                  Wyślij pytanie
-                </button>
-              </>
-            )}
-
-            {queryCount > 0 && (
-              <button className={styles.button} onClick={handleReset}>
-                Skanuj następne
-              </button>
-            )}
+            <input
+              className={styles.inputField}
+              type="text"
+              placeholder="Dopytaj o szczegóły"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={loadingFollowUp}
+            />
+            <button
+              onClick={handleFollowUpQuestionSubmit}
+              disabled={loadingFollowUp || !input}
+            >
+              Wyślij pytanie
+            </button>
           </>
+        )}
+        {followUpResponse && (
+          <p className={styles.response}>{followUpResponse}</p>
+        )}
+
+        {!showDetails && basicResponse && (
+          <button
+            className={styles.button}
+            onClick={() => setShowDetails(true)}
+            disabled={loadingDetails || loadingBasic}
+          >
+            {loadingDetails ? 'Ładowanie...' : 'Szczegóły'}
+          </button>
+        )}
+        {basicResponse && (
+          <button className={styles.button} onClick={handleReset}>
+            Skanuj następne
+          </button>
         )}
       </div>
     </div>

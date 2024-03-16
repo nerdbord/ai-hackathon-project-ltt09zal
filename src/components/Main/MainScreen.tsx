@@ -126,8 +126,8 @@ const MainScreen = () => {
                 close
               </div>
               <div className={styles.scan_list}>
-                <Call />
                 <button onClick={handleTahePhoto}>zdjęcie</button>
+                <Call />
               </div>
             </div>
           </motion.div>

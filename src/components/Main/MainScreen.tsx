@@ -22,12 +22,12 @@ const MainScreen = () => {
   };
 
   const handleOpenScan = () => {
-    setInitCamera(true)
+    setInitCamera(true);
     setOpen(true);
   };
 
   const handleCloseScan = () => {
-    setInitCamera(false)
+    setInitCamera(false);
     setOpen(false);
   };
 
@@ -93,10 +93,10 @@ const MainScreen = () => {
                 close
               </div>
               <div className={styles.scan_list}>
-                <Call />
                 <button onClick={GetOcrText}>
                   {textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
                 </button>
+                <Call />
               </div>
             </div>
           </motion.div>

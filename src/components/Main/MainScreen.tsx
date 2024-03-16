@@ -5,13 +5,15 @@ import Header from '../Header/Header';
 import ScanButton from '../ScanButton/ScanButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import CapturePhoto from '../CapturePhoto/CapturePhoto';
+import { useStore } from '@/store/useStore';
+import { Call } from '../Call/Call';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const MainScreen = () => {
-  const [open, setOpen] = useState<boolean>(false);
+  const { open, setOpen } = useStore();
   // For camera and ocr handling:
   const [resetOcr, setResetOcr] = useState<boolean>(false);
   const [takePhoto, setTakePhoto] = useState<boolean>(false);
@@ -24,8 +26,8 @@ const MainScreen = () => {
   }, [photoReady]);
 
   useEffect(() => {
-    openDetails()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    openDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
   async function openDetails() {
@@ -34,6 +36,15 @@ const MainScreen = () => {
       setOpen(true);
     }
   }
+
+  const handleCombinedClick = () => {
+    if (text === '') {
+      setTakePhoto(true);
+    } else {
+      handleResetOcr();
+    }
+    setOpen(true);
+  };
 
   const handleResetOcr = () => {
     setResetOcr(!resetOcr);
@@ -46,42 +57,45 @@ const MainScreen = () => {
   return (
     <main className={styles.wrapper}>
       <Header />
-      <div className={styles.container}>
-        <div className={styles.intro}>
-          <h2>
-            <strong>
-              Jak osiągnąć najlepsze efekty{' '}
-              <span className={styles.intro_span}>?</span>
-            </strong>
-          </h2>
-          <div className={styles.stepsWrapper}>
-            <div className={styles.intro_txt}>
-              <div className={styles.dot}></div>
-              <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
-            </div>
-            <div className={styles.intro_txt}>
-              <div className={styles.dot}></div>
-              <p>Upewnij się, że tekst jest czytelny, a zdjęcie ostre.</p>
-            </div>
-            <div className={styles.intro_txt}>
-              <div className={styles.dot}></div>
-              <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
+      {!open && (
+        <div className={styles.container}>
+          <div className={styles.intro}>
+            <h2>
+              <strong>
+                Jak osiągnąć najlepsze efekty{' '}
+                <span className={styles.intro_span}>?</span>
+              </strong>
+            </h2>
+            <div className={styles.stepsWrapper}>
+              <div className={styles.intro_txt}>
+                <div className={styles.dot}></div>
+                <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
+              </div>
+              <div className={styles.intro_txt}>
+                <div className={styles.dot}></div>
+                <p>Upewnij się, że tekst jest czytelny, a zdjęcie ostre.</p>
+              </div>
+              <div className={styles.intro_txt}>
+                <div className={styles.dot}></div>
+                <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
+              </div>
             </div>
           </div>
+
+          <ScanButton
+            onClick={handleCombinedClick}
+            text={text === '' ? 'Skanuj produkt' : 'Skanuj nowy'}
+            disabled={takePhoto && text === ''}
+          />
         </div>
-        <CapturePhoto
-          takePhoto={takePhoto}
-          setPhotoReady={setPhotoReady}
-          getText={getText}
-          setText={setText}
-          resetOcr={resetOcr}
-        />
-        <ScanButton
-          onClick={() => (text === '' ? setTakePhoto(true) : handleResetOcr())}
-          text={text === '' ? 'Skanuj produkt' : 'Skanuj nowy'}
-          disabled={takePhoto && text === ''}
-        />
-      </div>
+      )}
+      <CapturePhoto
+        takePhoto={takePhoto}
+        setPhotoReady={setPhotoReady}
+        getText={getText}
+        setText={setText}
+        resetOcr={resetOcr}
+      />
       <motion.div
         animate={
           open
@@ -111,10 +125,7 @@ const MainScreen = () => {
                 close
               </div>
               <div className={styles.scan_list}>
-                <span>item 1</span>
-                <span>item 2</span>
-                <span>item 3</span>
-                <span>item 4</span>
+                <Call />
               </div>
             </div>
           </motion.div>

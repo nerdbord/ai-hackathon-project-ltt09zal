@@ -31,23 +31,21 @@ const CapturePhoto: React.FC<Props> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    isCameraOpen && handleTakePhoto();
+    setTextData('');
+    setBase64img('');
+    setIsCameraOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetOcr]);
+
+  useEffect(() => {
+    isCameraOpen && takePhoto && handleTakePhoto();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [takePhoto]);
 
   useEffect(() => {
-    base64img && analizePhoto();
+    base64img !== '' && textData === '' && analizePhoto();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getText]);
-
-  useEffect(() => {
-    setTextData('');
-    setText(''); //parent reset
-    setBase64img('');
-    setPhotoReady(false); //parent reset
-    setIsCameraOpen(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resetOcr]);
 
   useEffect(() => {
     let videoElement = videoRef.current;
@@ -69,6 +67,8 @@ const CapturePhoto: React.FC<Props> = ({
 
     if (isCameraOpen) {
       initializeCamera();
+      setTextData('');
+      setBase64img('');
     }
 
     return () => {
@@ -78,14 +78,14 @@ const CapturePhoto: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCameraOpen]);
 
-  const closeCamera = () =>{
+  const closeCamera = () => {
     if (videoRef.current) {
       const mediaStream = videoRef.current.srcObject as MediaStream;
       if (mediaStream) {
         mediaStream.getTracks().forEach((track) => track.stop());
       }
     }
-  }
+  };
 
   const takePhotoHandler = async (
     videoElement: HTMLVideoElement
@@ -115,11 +115,12 @@ const CapturePhoto: React.FC<Props> = ({
   const handleTakePhoto = async (): Promise<void> => {
     setIsCameraOpen(false);
     closeCamera();
+    console.log('take photo');
     try {
       if (videoRef.current) {
         const imageData: Base64 = await takePhotoHandler(videoRef.current);
         setBase64img(imageData);
-        setPhotoReady(true);
+        setPhotoReady(true); //automaticaly launch foto analizer for ocr
       }
     } catch (error) {
       console.error('Error taking photo:', error);

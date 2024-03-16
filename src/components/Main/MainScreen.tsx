@@ -20,12 +20,15 @@ const MainScreen = () => {
   const [text, setText] = useState<string>('');
 
   useEffect(() => {
-    photoReady && setGetText(true);
+    if (photoReady) {
+      setGetText(true);
+      setTakePhoto(false);
+    }
   }, [photoReady]);
 
   useEffect(() => {
-    openDetails()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    openDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
   async function openDetails() {
@@ -36,12 +39,16 @@ const MainScreen = () => {
   }
 
   const handleResetOcr = () => {
-    setResetOcr(!resetOcr);
-    setTakePhoto(false);
-    setGetText(false);
     setText('');
+    setTakePhoto(false);
+    setPhotoReady(false);
+    setGetText(false);
     setOpen(false);
+    setResetOcr(!resetOcr);
   };
+  console.log('open', open);
+  console.log('text', text);
+  console.log('takePhoto', takePhoto);
 
   return (
     <main className={styles.wrapper}>

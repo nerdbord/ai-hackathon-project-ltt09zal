@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Call.module.scss';
 
 export const Call = () => {
-  const [input, setInput] = useState('');
-  const [basicResponse, setBasicResponse] = useState('');
-  const [detailResponse, setDetailResponse] = useState('');
-  const [followUpResponse, setFollowUpResponse] = useState('');
-  const [loadingBasic, setLoadingBasic] = useState(false);
-  const [loadingDetails, setLoadingDetails] = useState(false);
-  const [loadingFollowUp, setLoadingFollowUp] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [input, setInput] = useState<string>('');
+  const [basicResponse, setBasicResponse] = useState<string>('');
+  const [detailResponse, setDetailResponse] = useState<string>('');
+  const [followUpResponse, setFollowUpResponse] = useState<string>('');
+  const [loadingBasic, setLoadingBasic] = useState<boolean>(false);
+  const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
+  const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+
+  useEffect(() => {
+    const voiceOptions = speechSynthesis.getVoices();
+    setVoices(voiceOptions);
+    setSelectedVoice(voiceOptions.find(voice => voice.lang.startsWith('en')) || null);
+  }, []);
+
+  const speak = (text: string) => {
+    if (text && speechSynthesis) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = selectedVoice || voices[0];
+      speechSynthesis.speak(utterance);
+    }
+  };
 
   const fetchGPTResponse = async (
     prompt: string,
@@ -64,8 +80,8 @@ export const Call = () => {
   };
 
   const handleDetailIngredientsSubmit = () => {
-      const detailPrompt = `Jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
-      fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
+    const detailPrompt = `Jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
+    fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
   };
 
   const handleFollowUpQuestionSubmit = () => {
@@ -106,7 +122,12 @@ export const Call = () => {
         ) : (
           basicResponse &&
           !followUpResponse && (
-            <p className={styles.response}>{basicResponse}</p>
+            <>
+              <p className={styles.response}>{basicResponse}</p>
+              <button onClick={() => speak(basicResponse)}>
+                Czytaj podstawową odpowiedź
+              </button>
+            </>
           )
         )}
 
@@ -117,7 +138,10 @@ export const Call = () => {
             ) : (
               detailResponse &&
               !followUpResponse && (
+                <>
                 <p className={styles.response}>{detailResponse}</p>
+                <button onClick={() => speak(detailResponse)}>Czytaj szczegółową odpowiedź</button>
+              </>
               )
             )}
 
@@ -138,7 +162,10 @@ export const Call = () => {
           </>
         )}
         {followUpResponse && (
-          <p className={styles.response}>{followUpResponse}</p>
+       <>
+       <p className={styles.response}>{followUpResponse}</p>
+       <button onClick={() => speak(followUpResponse)}>Czytaj odpowiedź na pytanie</button>
+     </>
         )}
 
         {!showDetails && basicResponse && (

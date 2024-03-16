@@ -1,0 +1,25 @@
+.container {
+    width: 100%;
+    max-width: 500px;
+    overflow: hidden;
+    // margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    justify-content: center;
+    align-items: center;
+
+    button{
+        color: #FFF;
+    }
+}
+
+.preview {
+    width: 100%;
+    height: auto;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 24px;
+}

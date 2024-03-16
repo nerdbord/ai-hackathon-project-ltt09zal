@@ -2,21 +2,19 @@
     width: 100%;
     max-width: 500px;
     overflow: hidden;
-    // margin-top: 50px;
+    margin: 20px 0px 20px 0px;
     display: flex;
     flex-direction: column;
     gap:20px;
     justify-content: center;
     align-items: center;
-
-    button{
-        color: #FFF;
-    }
+    position: relative;
 }
 
 .preview {
     width: 100%;
     height: auto;
+    border-radius: 8px;
 }
 
 .buttonsContainer {

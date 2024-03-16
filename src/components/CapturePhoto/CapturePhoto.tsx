@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { createWorker } from 'tesseract.js';
 import styles from './CapturePhoto.module.scss';
 import Camera from '../icons/Camera';
+import Image from 'next/image';
+import ocr from '@/utils/ocr';
 
-type PhotoData = string | null;
+type PhotoData = string;
 
 const CapturePhoto = (): JSX.Element => {
-  const [photoData, setPhotoData] = useState<PhotoData>(null);
-  const [textData, setTextData] = useState<string>("");
+  const [photoData, setPhotoData] = useState<PhotoData>('');
+  const [textData, setTextData] = useState<string>('');
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -48,10 +49,10 @@ const CapturePhoto = (): JSX.Element => {
     try {
       const canvasElement = document.createElement('canvas');
       const canvasContext = canvasElement.getContext('2d');
-  
+
       canvasElement.width = videoElement.videoWidth;
       canvasElement.height = videoElement.videoHeight;
-  
+
       canvasContext?.drawImage(
         videoElement,
         0,
@@ -59,7 +60,7 @@ const CapturePhoto = (): JSX.Element => {
         canvasElement.width,
         canvasElement.height
       );
-  
+
       const imageData = canvasElement.toDataURL('image/png');
       return imageData;
     } catch (error) {
@@ -78,21 +79,10 @@ const CapturePhoto = (): JSX.Element => {
     }
   };
 
-  const getTextFromImage = async (): Promise<string> => {
-    const worker = await createWorker('pol+eng');
-    await worker.setParameters({
-      tessedit_char_whitelist: '0123456789aąbcćdeęfghijklłmnńoóprsśtuwzźż ,.?!',
-    });
-    const {
-      data: { text },
-    } = await worker.recognize(photoData);
-    await worker.terminate();
-
-    return text;
-  };
 
   const analizePhoto = async (): Promise<void> => {
-    setTextData(await getTextFromImage());
+    const text = await ocr(photoData)
+    setTextData(text);
     //gpt request
   };
 
@@ -120,7 +110,13 @@ const CapturePhoto = (): JSX.Element => {
 
       {photoData && (
         <div className={styles.container}>
-          <img className={styles.preview} src={photoData} alt="Taken photo" />
+          <Image
+            className={styles.preview}
+            src={photoData}
+            width={100}
+            height={100}
+            alt="Taken photo"
+          />
           <button onClick={analizePhoto}>Analizuj</button>
           <code>{textData}</code>
         </div>

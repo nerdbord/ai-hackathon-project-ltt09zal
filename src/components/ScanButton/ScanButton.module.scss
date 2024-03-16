@@ -1,0 +1,21 @@
+@import '../../styles/mixins';
+
+.button {
+  background-color: #8a2be2;
+  color: #ffffff;
+  padding: 20px 30px;
+  font-size: 25px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
+
+  &:hover {
+    background-color: #8a2be2;
+    transform: scale(1.05);
+  }
+}

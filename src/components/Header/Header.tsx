@@ -1,21 +1,14 @@
-import React from 'react'
-import styles from './Header.module.scss'
+import React from 'react';
+import styles from './Header.module.scss';
 
-const Header = ({ bottomRadius = false}) => {
-  const headerStyle = bottomRadius
-  ? { 
-      borderBottomLeftRadius: '25px',
-      borderBottomRightRadius: '25px'
-    }
-  : {};
-
+const Header = () => {
   return (
-    <div className={styles.wrapper} style={headerStyle}>
-       <div className={styles.image}>
-       <img src="/assets/logo.png" alt="Logo" />
+    <div className={styles.wrapper}>
+      <div className={styles.image}>
+        <img src="/assets/HC_logo.png" alt="Logo" />
+      </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

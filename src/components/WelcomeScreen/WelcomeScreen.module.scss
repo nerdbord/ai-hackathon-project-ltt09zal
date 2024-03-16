@@ -1,61 +1,116 @@
-@import '../../styles/mixins';
-
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0px;
-  color: #333; 
-}
-
-.intro {
-  margin: 5px 10px;
-  text-align: start;
-  width: 100%;
-}
-
-.intro p {
-  margin: 5px 0; 
-  font-size: 18px; 
-  font-weight: 500;
-  line-height: 1.4; 
-}
-
-.cameraImage {
-  margin: 5px 0; 
-  opacity: 0.9;
-}
-
-.button {
-  background-color: #FF5757;
-  color: #ffffff;
-  padding: 20px 40px;
-  font-size: 25px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: background-color 0.3s, transform 0.3s;
-
-  &:hover {
-    background-color: #FF5757;
-    transform: scale(1.05);
+@keyframes enterFromTopLeftAndSpin {
+  from {
+    transform: translate(-100vw, -100vh) rotate(0deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0) rotate(360deg);
+    opacity: 1;
   }
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  @include mobile {
+@keyframes enterFromTopRightAndSpin {
+  from {
+    transform: translate(100vw, -100vh) rotate(0deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes enterFromBottomLeftAndSpin {
+  from {
+    transform: translate(-100vw, 100vh) rotate(0deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes enterFromBottomRightAndSpin {
+  from {
+    transform: translate(100vw, 100vh) rotate(0deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes moveAcrossScreen {
+  0% {
+    transform: translate(-100%, -100%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100vw, 100vh);
+    opacity: 0;
+  }
+}
+
+.animationContainer {
   background-color: #FFE4E4; 
-  border-bottom-left-radius: 25px;
-  border-bottom-right-radius: 25px; 
-  padding: 20px; 
-  margin-bottom: 30px;
-  color: black;
-  }
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.animationContainer img {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+}
+
+.animationContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden; 
+}
+
+.animationContainer img {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+}
+
+.appleIcon1 {
+  animation: enterFromTopLeftAndSpin 2s ease forwards;
+}
+.appleIcon2 {
+  animation: enterFromBottomLeftAndSpin 1s ease forwards;
+}
+
+.bananaIcon1 {
+  animation: enterFromTopRightAndSpin 2s ease forwards;
+}
+.bananaIcon2 {
+  animation: enterFromBottomRightAndSpin 2s ease forwards;
+}
+.broccoliIcon1 {
+  animation: enterFromTopRightAndSpin 1s ease forwards;
+}
+.broccoliIcon2 {
+  animation: enterFromBottomLeftAndSpin 2s ease forwards;
+}
+
+.logo {
+  width: 258px; 
+  height: auto; 
+  position: relative; 
+  bottom: 20px; 
+  left: 20%; 
+  transform: translateX(-50); 
+ 
 }

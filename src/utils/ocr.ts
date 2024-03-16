@@ -15,21 +15,33 @@ export default async function ocr(base64Image: string) {
   formData.append('issearchablepdfhidetextlayer', 'false');
 
   try {
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       method: 'POST',
       headers: myHeaders,
       body: formData,
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Request failed with status: ${response.status}. Message: ${response.json}`
-      );
+      // change api key(10 req per 10 minutes of free tier)
+      console.log("Attempt with second API key")
+      myHeaders.append('apikey', process.env.NEXT_PUBLIC_OCR_API_KEY as string);
+      response = await fetch(url, {
+        method: 'POST',
+        headers: myHeaders,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Request failed with status: ${response.status}. Message: ${response.json}`
+        );
+      }
     }
 
     const data = await response.json();
     let ocrText = data.ParsedResults[0].ParsedText;
-    if (ocrText === '') { // Try to recognize text using Tesseract OCR
+    if (ocrText === '') {
+      // Try to recognize text using Tesseract OCR
       ocrText = await ocrTesseract(base64Image);
     }
     return ocrText;
@@ -54,7 +66,7 @@ async function ocrTesseract(base64Image: string): Promise<string> {
     data: { text },
   } = await worker.recognize(processedImage);
   await worker.terminate();
-  return text+"\n(generated with Tesseract)";
+  return text + '\n(generated with Tesseract)';
 }
 
 // Preprocess image (for tesseract)

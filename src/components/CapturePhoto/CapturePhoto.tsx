@@ -72,16 +72,20 @@ const CapturePhoto: React.FC<Props> = ({
     }
 
     return () => {
-      if (videoElement) {
-        const mediaStream = videoElement.srcObject as MediaStream;
-        if (mediaStream) {
-          mediaStream.getTracks().forEach((track) => track.stop());
-        }
-      }
+      closeCamera();
       setPhotoReady(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCameraOpen]);
+
+  const closeCamera = () =>{
+    if (videoRef.current) {
+      const mediaStream = videoRef.current.srcObject as MediaStream;
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+      }
+    }
+  }
 
   const takePhotoHandler = async (
     videoElement: HTMLVideoElement
@@ -110,6 +114,7 @@ const CapturePhoto: React.FC<Props> = ({
 
   const handleTakePhoto = async (): Promise<void> => {
     setIsCameraOpen(false);
+    closeCamera();
     try {
       if (videoRef.current) {
         const imageData: Base64 = await takePhotoHandler(videoRef.current);

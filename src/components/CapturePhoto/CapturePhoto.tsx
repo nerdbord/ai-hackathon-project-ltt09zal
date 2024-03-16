@@ -115,7 +115,6 @@ const CapturePhoto: React.FC<Props> = ({
   const handleTakePhoto = async (): Promise<void> => {
     setIsCameraOpen(false);
     closeCamera();
-    console.log('take photo');
     try {
       if (videoRef.current) {
         const imageData: Base64 = await takePhotoHandler(videoRef.current);

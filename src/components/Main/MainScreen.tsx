@@ -41,11 +41,11 @@ const MainScreen = () => {
   }
 
   const handleCombinedClick = () => {
-    if (text === '') {
-      setTakePhoto(true);
-    } else {
-      handleResetOcr();
-    }
+    // if (text === '') {
+    //   setTakePhoto(true);
+    // } else {
+    //   handleResetOcr();
+    // }
     setOpen(true);
   };
 
@@ -57,9 +57,6 @@ const MainScreen = () => {
     setOpen(false);
     setResetOcr(!resetOcr);
   };
-  console.log('open', open);
-  console.log('text', text);
-  console.log('takePhoto', takePhoto);
 
   return (
     <main className={styles.wrapper}>
@@ -96,13 +93,7 @@ const MainScreen = () => {
           />
         </div>
       )}
-      <CapturePhoto
-        takePhoto={takePhoto}
-        setPhotoReady={setPhotoReady}
-        getText={getText}
-        setText={setText}
-        resetOcr={resetOcr}
-      />
+      
       <motion.div
         animate={
           open
@@ -111,7 +102,14 @@ const MainScreen = () => {
         }
         initial={{ opacity: 0 }}
         className={styles.scan_box}
-        onClick={() => setOpen(!open)}
+        // onClick={() => setOpen(!open)}
+      />
+      <CapturePhoto
+        takePhoto={takePhoto}
+        setPhotoReady={setPhotoReady}
+        getText={getText}
+        setText={setText}
+        resetOcr={resetOcr}
       />
       <AnimatePresence initial={false}>
         {open && (

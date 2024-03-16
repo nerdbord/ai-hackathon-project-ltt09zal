@@ -13,49 +13,22 @@ function sleep(ms: number) {
 }
 
 const MainScreen = () => {
-  const { open, setOpen } = useStore();
-  // For camera and ocr handling:
-  const [resetOcr, setResetOcr] = useState<boolean>(false);
-  const [takePhoto, setTakePhoto] = useState<boolean>(false);
-  const [photoReady, setPhotoReady] = useState<boolean>(false);
-  const [getText, setGetText] = useState<boolean>(false);
-  const [text, setText] = useState<string>('');
+  const { open, setOpen, startOcr, setStartOcr, textOcr, setInitCamera } =
+    useStore();
 
-  useEffect(() => {
-    if (photoReady) {
-      setGetText(true);
-      setTakePhoto(false);
-    }
-  }, [photoReady]);
-
-  useEffect(() => {
-    openDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
-
-  async function openDetails() {
-    if (text !== '') {
-      await sleep(1500);
-      setOpen(true);
-    }
-  }
-
-  const handleCombinedClick = () => {
-    // if (text === '') {
-    //   setTakePhoto(true);
-    // } else {
-    //   handleResetOcr();
-    // }
+  const GetOcrText = () => {
+    setStartOcr(!startOcr);
     setOpen(true);
   };
 
-  const handleResetOcr = () => {
-    setText('');
-    setTakePhoto(false);
-    setPhotoReady(false);
-    setGetText(false);
+  const handleOpenScan = () => {
+    setInitCamera(true)
+    setOpen(true);
+  };
+
+  const handleCloseScan = () => {
+    setInitCamera(false)
     setOpen(false);
-    setResetOcr(!resetOcr);
   };
 
   return (
@@ -86,14 +59,10 @@ const MainScreen = () => {
             </div>
           </div>
 
-          <ScanButton
-            onClick={() => setOpen(true)}
-            text={text === '' ? 'Skanuj produkt' : 'Skanuj nowy'}
-            disabled={takePhoto && text === ''}
-          />
+          <ScanButton onClick={handleOpenScan} text={'Skanuj produkt'} />
         </div>
       )}
-      
+
       <motion.div
         animate={
           open
@@ -104,13 +73,7 @@ const MainScreen = () => {
         className={styles.scan_box}
         // onClick={() => setOpen(!open)}
       />
-      <CapturePhoto
-        takePhoto={takePhoto}
-        setPhotoReady={setPhotoReady}
-        getText={getText}
-        setText={setText}
-        resetOcr={resetOcr}
-      />
+      <CapturePhoto />
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
@@ -126,12 +89,14 @@ const MainScreen = () => {
             className={styles.scan_container}
           >
             <div className={styles.scan_content}>
-              <div className={styles.scan_close} onClick={() => setOpen(false)}>
+              <div className={styles.scan_close} onClick={handleCloseScan}>
                 close
               </div>
               <div className={styles.scan_list}>
                 <Call />
-                <button onClick={handleTahePhoto}>zdjęcie</button>
+                <button onClick={GetOcrText}>
+                  {textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+                </button>
               </div>
             </div>
           </motion.div>

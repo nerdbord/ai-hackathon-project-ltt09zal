@@ -4,52 +4,55 @@ import Camera from '../icons/Camera';
 import Image from 'next/image';
 import LoaderSpinner from '../LoaderSpinner/LoaderSpinner';
 import ocr from '@/utils/ocr';
+import { useStore } from '@/store/useStore';
 
 type Base64 = string;
 
 interface Props {
-  takePhoto: boolean;
-  setPhotoReady: (value: boolean) => void;
-  getText: boolean;
-  setText: (value: string) => void;
-  resetOcr: boolean;
   enableControls?: boolean;
 }
 
-const CapturePhoto: React.FC<Props> = ({
-  takePhoto,
-  setPhotoReady,
-  getText,
-  setText,
-  resetOcr,
-  enableControls = false,
-}) => {
+const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [base64img, setBase64img] = useState<Base64>('');
-  const [textData, setTextData] = useState<string>('');
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    setTextData('');
-    setBase64img('');
-    setIsCameraOpen(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resetOcr]);
+  const { initCamera, startOcr, textOcr, setTextOcr } = useStore();
 
   useEffect(() => {
-    isCameraOpen && takePhoto && handleTakePhoto();
+    if (!isCameraOpen && initCamera) {
+      setIsCameraOpen(true);
+    } else if (isCameraOpen && !initCamera) {
+      // setTextOcr('');
+      // setBase64img('');
+      setIsCameraOpen(false);
+      closeCamera();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [takePhoto]);
+  }, [initCamera]);
 
   useEffect(() => {
-    base64img !== '' && textData === '' && analizePhoto();
+    if (!isCameraOpen && initCamera) {
+      setTextOcr('');
+      setBase64img('');
+      setIsCameraOpen(true);
+    }
+
+    if (isCameraOpen) {
+      handleTakePhoto();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getText]);
+  }, [startOcr]);
+
+  useEffect(() => {
+    base64img !== '' && textOcr === '' && analizePhoto();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [base64img]);
 
   useEffect(() => {
     let videoElement = videoRef.current;
-    const initializeCamera = async () => {
+    async function initializeCamera() {
       try {
         if (videoElement) {
           const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -63,33 +66,32 @@ const CapturePhoto: React.FC<Props> = ({
       } catch (error) {
         console.error('Error accessing camera:', error);
       }
-    };
+    }
 
     if (isCameraOpen) {
       initializeCamera();
-      setTextData('');
+      setTextOcr('');
       setBase64img('');
     }
 
     return () => {
       closeCamera();
-      setPhotoReady(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCameraOpen]);
 
-  const closeCamera = () => {
+  function closeCamera() {
     if (videoRef.current) {
       const mediaStream = videoRef.current.srcObject as MediaStream;
       if (mediaStream) {
         mediaStream.getTracks().forEach((track) => track.stop());
       }
     }
-  };
+  }
 
-  const takePhotoHandler = async (
+  async function takePhotoHandler(
     videoElement: HTMLVideoElement
-  ): Promise<Base64> => {
+  ): Promise<Base64> {
     try {
       const canvasElement = document.createElement('canvas');
       const canvasContext = canvasElement.getContext('2d');
@@ -110,34 +112,31 @@ const CapturePhoto: React.FC<Props> = ({
     } catch (error) {
       throw error;
     }
-  };
+  }
 
-  const handleTakePhoto = async (): Promise<void> => {
+  async function handleTakePhoto(): Promise<void> {
     setIsCameraOpen(false);
     closeCamera();
     try {
       if (videoRef.current) {
         const imageData: Base64 = await takePhotoHandler(videoRef.current);
         setBase64img(imageData);
-        setPhotoReady(true); //automaticaly launch foto analizer for ocr
       }
     } catch (error) {
       console.error('Error taking photo:', error);
     }
-  };
+  }
 
   const analizePhoto = async (): Promise<void> => {
     setLoading(true);
     try {
       const textOCR = await ocr(base64img);
-      setText(textOCR);
-      setTextData(textOCR); //displays inside component
+      setTextOcr(textOCR);
     } catch (error) {
       console.error('Error fetching OCR results:', error);
     } finally {
       setLoading(false);
     }
-    //gpt request
   };
 
   return (
@@ -149,10 +148,10 @@ const CapturePhoto: React.FC<Props> = ({
             <div
               className={styles.container}
               style={{ cursor: 'pointer' }}
-              onClick={handleTakePhoto}
+              // onClick={handleTakePhoto}
             >
               <video className={styles.preview} ref={videoRef} autoPlay />
-              <p>Kliknij aby zrobić zdjęcie.</p>
+              {/* <p>Kliknij aby zrobić zdjęcie.</p> */}
             </div>
           ) : (
             <div
@@ -185,7 +184,7 @@ const CapturePhoto: React.FC<Props> = ({
                 onClick={() => {
                   setIsCameraOpen(true);
                   setBase64img('');
-                  setTextData('');
+                  setTextOcr('');
                 }}
               >
                 Zrób nowe
@@ -196,7 +195,7 @@ const CapturePhoto: React.FC<Props> = ({
             </div>
           )}
 
-          <code>{textData}</code>
+          <code>{textOcr}</code>
         </div>
       )}
     </div>

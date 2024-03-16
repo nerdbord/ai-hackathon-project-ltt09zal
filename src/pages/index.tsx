@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.scss'
 import WelcomeScreen from '../components/WelcomeScreen/WelcomeScreen'
 import CapturePhoto from '@/components/CapturePhoto/CapturePhoto'
+import { Call } from '@/components/Call'
 
 
 const inter = Inter({
@@ -17,6 +18,7 @@ export default function Home() {
 		<Header />
 		<WelcomeScreen />
      <CapturePhoto />
+	 <Call />
 		</>
 	)
 }

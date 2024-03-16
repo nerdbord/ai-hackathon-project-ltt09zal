@@ -11,12 +11,15 @@ export const Call = () => {
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+  const [selectedVoice, setSelectedVoice] =
+    useState<SpeechSynthesisVoice | null>(null);
 
   useEffect(() => {
     const voiceOptions = speechSynthesis.getVoices();
     setVoices(voiceOptions);
-    setSelectedVoice(voiceOptions.find(voice => voice.lang.startsWith('en')) || null);
+    setSelectedVoice(
+      voiceOptions.find((voice) => voice.lang.startsWith('en')) || null
+    );
   }, []);
 
   const speak = (text: string) => {
@@ -122,12 +125,14 @@ export const Call = () => {
         ) : (
           basicResponse &&
           !followUpResponse && (
-            <>
-              <p className={styles.response}>{basicResponse}</p>
-              <button onClick={() => speak(basicResponse)}>
-                Czytaj podstawową odpowiedź
-              </button>
-            </>
+            <div>
+              <div className={styles.response}>
+                {basicResponse}{' '}
+                <button onClick={() => speak(basicResponse)}>
+                  Czytaj podstawową odpowiedź
+                </button>
+              </div>
+            </div>
           )
         )}
 
@@ -138,10 +143,14 @@ export const Call = () => {
             ) : (
               detailResponse &&
               !followUpResponse && (
-                <>
-                <p className={styles.response}>{detailResponse}</p>
-                <button onClick={() => speak(detailResponse)}>Czytaj szczegółową odpowiedź</button>
-              </>
+                <div>
+                  <div className={styles.response}>
+                    {detailResponse}{' '}
+                    <button onClick={() => speak(detailResponse)}>
+                      Czytaj szczegółową odpowiedź
+                    </button>
+                  </div>
+                </div>
               )
             )}
 
@@ -162,10 +171,14 @@ export const Call = () => {
           </>
         )}
         {followUpResponse && (
-       <>
-       <p className={styles.response}>{followUpResponse}</p>
-       <button onClick={() => speak(followUpResponse)}>Czytaj odpowiedź na pytanie</button>
-     </>
+          <div>
+            <div className={styles.response}>
+              {followUpResponse}{' '}
+              <button onClick={() => speak(followUpResponse)}>
+                Czytaj odpowiedź na pytanie
+              </button>
+            </div>
+          </div>
         )}
 
         {!showDetails && basicResponse && (

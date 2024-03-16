@@ -7,6 +7,7 @@ type PhotoData = string | null;
 
 const CapturePhoto = (): JSX.Element => {
   const [photoData, setPhotoData] = useState<PhotoData>(null);
+  const [textData, setTextData] = useState<string>("");
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -78,8 +79,6 @@ const CapturePhoto = (): JSX.Element => {
   };
 
   const getTextFromImage = async (): Promise<string> => {
-    console.log('getTextFromImage', photoData);
-
     const worker = await createWorker('pol+eng');
     await worker.setParameters({
       tessedit_char_whitelist: '0123456789aąbcćdeęfghijklłmnńoóprsśtuwzźż ,.?!',
@@ -93,8 +92,7 @@ const CapturePhoto = (): JSX.Element => {
   };
 
   const analizePhoto = async (): Promise<void> => {
-    const imageText = await getTextFromImage();
-    console.log('imageText: ', imageText);
+    setTextData(await getTextFromImage());
     //gpt request
   };
 
@@ -124,6 +122,7 @@ const CapturePhoto = (): JSX.Element => {
         <div className={styles.container}>
           <img className={styles.preview} src={photoData} alt="Taken photo" />
           <button onClick={analizePhoto}>Analizuj</button>
+          <code>{textData}</code>
         </div>
       )}
     </div>

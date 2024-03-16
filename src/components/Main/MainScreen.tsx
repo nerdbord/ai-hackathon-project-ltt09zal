@@ -6,6 +6,10 @@ import ScanButton from '../ScanButton/ScanButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import CapturePhoto from '../CapturePhoto/CapturePhoto';
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 const MainScreen = () => {
   const [open, setOpen] = useState<boolean>(false);
   // For camera and ocr handling:
@@ -20,8 +24,16 @@ const MainScreen = () => {
   }, [photoReady]);
 
   useEffect(() => {
-    text !== '' && setOpen(true);
+    openDetails()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
+
+  async function openDetails() {
+    if (text !== '') {
+      await sleep(1500);
+      setOpen(true);
+    }
+  }
 
   const handleResetOcr = () => {
     setResetOcr(!resetOcr);

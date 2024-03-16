@@ -56,7 +56,7 @@ export default async function ocr(base64Image: string) {
 
 // Proceed ocr with tesseract
 async function ocrTesseract(base64Image: string): Promise<string> {
-  const processedImage = await preprocessImage(base64Image);
+  // const processedImage = await preprocessImage(base64Image);
   const worker = await createWorker();
   await worker.setParameters({
     tessedit_char_whitelist:
@@ -64,7 +64,7 @@ async function ocrTesseract(base64Image: string): Promise<string> {
   });
   const {
     data: { text },
-  } = await worker.recognize(processedImage);
+  } = await worker.recognize(base64Image);
   await worker.terminate();
   return text + '\n(generated with Tesseract)';
 }

@@ -13,43 +13,21 @@ function sleep(ms: number) {
 }
 
 const MainScreen = () => {
-  const { open, setOpen } = useStore();
-  // For camera and ocr handling:
-  const [resetOcr, setResetOcr] = useState<boolean>(false);
-  const [takePhoto, setTakePhoto] = useState<boolean>(false);
-  const [photoReady, setPhotoReady] = useState<boolean>(false);
-  const [getText, setGetText] = useState<boolean>(false);
-  const [text, setText] = useState<string>('');
+  const { open, setOpen, startOcr, setStartOcr, textOcr, setInitCamera } =
+    useStore();
 
-  useEffect(() => {
-    photoReady && setGetText(true);
-  }, [photoReady]);
-
-  useEffect(() => {
-    openDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text]);
-
-  async function openDetails() {
-    if (text !== '') {
-      await sleep(1500);
-      setOpen(true);
-    }
-  }
-
-  const handleTahePhoto = () => {
-    if (text === '') {
-      setTakePhoto(true);
-    } else {
-      handleResetOcr();
-    }
+  const GetOcrText = () => {
+    setStartOcr(!startOcr);
+    setOpen(true);
   };
 
-  const handleResetOcr = () => {
-    setResetOcr(!resetOcr);
-    setTakePhoto(false);
-    setGetText(false);
-    setText('');
+  const handleOpenScan = () => {
+    setInitCamera(true);
+    setOpen(true);
+  };
+
+  const handleCloseScan = () => {
+    setInitCamera(false);
     setOpen(false);
   };
 
@@ -81,22 +59,10 @@ const MainScreen = () => {
             </div>
           </div>
 
-          <ScanButton
-            onClick={() => setOpen(true)}
-            text={text === '' ? 'Skanuj produkt' : 'Skanuj nowy'}
-            disabled={takePhoto && text === ''}
-          />
+          <ScanButton onClick={handleOpenScan} text={'Skanuj produkt'} />
         </div>
       )}
-      {open && (
-        <CapturePhoto
-          takePhoto={takePhoto}
-          setPhotoReady={setPhotoReady}
-          getText={getText}
-          setText={setText}
-          resetOcr={resetOcr}
-        />
-      )}
+
       <motion.div
         animate={
           open
@@ -105,8 +71,9 @@ const MainScreen = () => {
         }
         initial={{ opacity: 0 }}
         className={styles.scan_box}
-        onClick={() => setOpen(!open)}
+        // onClick={() => setOpen(!open)}
       />
+      <CapturePhoto />
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
@@ -122,11 +89,13 @@ const MainScreen = () => {
             className={styles.scan_container}
           >
             <div className={styles.scan_content}>
-              <div className={styles.scan_close} onClick={() => setOpen(false)}>
+              <div className={styles.scan_close} onClick={handleCloseScan}>
                 close
               </div>
               <div className={styles.scan_list}>
-                <button onClick={handleTahePhoto}>zdjęcie</button>
+                <button onClick={GetOcrText}>
+                  {textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+                </button>
                 <Call />
               </div>
             </div>

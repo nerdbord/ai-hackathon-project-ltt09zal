@@ -13,7 +13,15 @@ export const Call = () => {
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
-  const { initCamera, startOcr, textOcr, setTextOcr, setStartOcr, setOpen, open } = useStore();
+  const {
+    initCamera,
+    startOcr,
+    textOcr,
+    setTextOcr,
+    setStartOcr,
+    setOpen,
+    open,
+  } = useStore();
   // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   // const [selectedVoice, setSelectedVoice] =
   //   useState<SpeechSynthesisVoice | null>(null);
@@ -78,8 +86,7 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  const ingredients = textOcr;
-
+  /*  const ingredients = textOcr;
 
   const GetOcrText = () => {
     setStartOcr(!startOcr);
@@ -102,6 +109,33 @@ export const Call = () => {
       fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
       setInput('');
     }
+  }; */
+
+  // const ingredients = textOcr;
+  const ingredients =
+    'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
+
+  const GetOcrText = () => {
+    setStartOcr(!startOcr);
+    setOpen(true);
+  };
+
+  const handleBasicIngredientsSubmit = () => {
+    const basicPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest zdrowy, czy mam go ograniczać, czy jest coś niezdrowego itd. dwa krótkie zdania od asystenta, nie rozpisuj się.`;
+    fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
+  };
+
+  const handleDetailIngredientsSubmit = () => {
+    const detailPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków`;
+    fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
+  };
+
+  const handleFollowUpQuestionSubmit = () => {
+    if (input) {
+      const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje: ${detailResponse}. Użytkownik pyta o ten produkt: "${input}". Proszę udzielić odpowiedzi.`;
+      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
+      setInput('');
+    }
   };
 
   const testowo = () => {
@@ -120,20 +154,21 @@ export const Call = () => {
   };
 
   return (
-    <div className={styles.callContainer}>
-            <Button
-                  onClick={GetOcrText}
-                  text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-                />
-      <Button
-        onClick={testowo}
-        disabled={loadingBasic || loadingDetails || loadingFollowUp}
-        text={'ZATWIERDŹ'}
-     />
-
+    <div className={styles.container}>
       <div className={styles.responseContainer}>
+        <div className={styles.buttonBox}>
+          <Button
+            onClick={GetOcrText}
+            text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+          />
+          <Button
+            onClick={testowo}
+            disabled={loadingBasic || loadingDetails || loadingFollowUp}
+            text={'ZATWIERDŹ'}
+          />
+        </div>
         {loadingBasic ? (
-          <div className={styles.spinner}>Loading...</div>
+          <div className={styles.spinner}></div>
         ) : (
           basicResponse &&
           !followUpResponse && (
@@ -151,7 +186,7 @@ export const Call = () => {
         {showDetails && !followUpResponse && (
           <>
             {loadingDetails ? (
-              <div className={styles.spinner}>Loading...</div>
+              <div className={styles.spinner}></div>
             ) : (
               detailResponse &&
               !followUpResponse && (
@@ -165,21 +200,21 @@ export const Call = () => {
                 </div>
               )
             )}
-
-            <input
-              className={styles.inputField}
-              type="text"
-              placeholder="Dopytaj o szczegóły"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={loadingFollowUp}
-            />
-            <button
-              onClick={handleFollowUpQuestionSubmit}
-              disabled={loadingFollowUp || !input}
-            >
-              Wyślij pytanie
-            </button>
+            <div className={styles.details}>
+              <input
+                className={styles.inputField}
+                type="text"
+                placeholder="Dopytaj o szczegóły"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={loadingFollowUp}
+              />
+              <Button
+                text={'Wyślij'}
+                onClick={handleFollowUpQuestionSubmit}
+                disabled={loadingFollowUp || !input}
+              />
+            </div>
           </>
         )}
         {followUpResponse && (
@@ -192,21 +227,18 @@ export const Call = () => {
             </div>
           </div>
         )}
-
-        {!showDetails && basicResponse && (
-          <button
-            className={styles.button}
-            onClick={() => setShowDetails(true)}
-            disabled={loadingDetails || loadingBasic}
-          >
-            {loadingDetails ? 'Ładowanie...' : 'Szczegóły'}
-          </button>
-        )}
-        {basicResponse && (
-          <button className={styles.button} onClick={handleReset}>
-            Skanuj następne
-          </button>
-        )}
+        <div className={styles.buttonBox}>
+          {!showDetails && basicResponse && (
+            <Button
+              onClick={() => setShowDetails(true)}
+              disabled={loadingDetails || loadingBasic}
+              text={loadingDetails ? 'Analizuję...' : 'Szczegóły'}
+            />
+          )}
+          {basicResponse && (
+            <Button text={'Skanuj następne'} onClick={handleReset} />
+          )}
+        </div>
       </div>
     </div>
   );

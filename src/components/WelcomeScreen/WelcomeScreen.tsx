@@ -18,6 +18,7 @@ const WelcomeScreen = () => {
   if (showContent) {
     return (
       <>
+      <Header />
         <MainScreen />
       </>
     );

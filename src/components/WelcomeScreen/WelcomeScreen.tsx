@@ -61,14 +61,15 @@ const WelcomeScreen = () => {
         className={styles.broccoliIcon2}
         alt="broccoli"
       />
-      <motion.img
-      src="/assets/gif.gif"
-      className={styles.logo}
-      initial={{ opacity: 0, translateY: 10 }} /* Początkowe ustawienia */
-      animate={{ opacity: 1, translateY: 0 }} /* Animacja pojawienia się */
-      transition={{ delay: 2.2, duration: 0.8 }} /* Opóźnienie i czas trwania */
-      alt="Logo Zdrowe Info"
-    />
+    <motion.img
+        src="/assets/git.gif"
+        style={{ width: '400px', height: '200px' }}
+        className={styles.logo}
+        initial={{ opacity: 0, translateY: 10 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ delay: 2, duration: 1.9 }}
+        alt="Logo"
+      />
     </motion.div>
   );
 };

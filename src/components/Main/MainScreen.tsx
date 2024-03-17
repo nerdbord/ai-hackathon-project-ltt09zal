@@ -22,7 +22,7 @@ const MainScreen = () => {
     setStartOcr,
     textOcr,
     setInitCamera,
-    initCamera,
+    initCamera, imageUrl
   } = useStore();
 
   // const GetOcrText = () => {
@@ -83,6 +83,7 @@ const MainScreen = () => {
         // onClick={() => setOpen(!open)}
       />
       {/* <CapturePhoto /> */}
+      <img src={imageUrl} alt='siema'/>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div

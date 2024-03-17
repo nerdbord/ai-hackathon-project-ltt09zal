@@ -32,7 +32,7 @@ export default async function handler(
         {
           role: 'user',
           content: [
-            { type: 'text', text: 'Provide all the text visible on the image' },
+            { type: 'text', text: 'spróbuj wyodrębnić skład ze zdjęcia etykiety produktu spożywczego poniżej' },
             {
               type: 'image_url',
               image_url: {

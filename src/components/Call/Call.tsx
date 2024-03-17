@@ -133,12 +133,12 @@ export const Call = () => {
   };
 
   const handleBasicIngredientsSubmit = () => {
-    const basicPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest zdrowy, czy mam go ograniczać, czy jest c. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
+    const basicPrompt = `jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu: ${ingredients}. Czy jest zdrowy, czy mam go ograniczać, czy jest szkodliwy itd. dwa krótkie zdania od asystenta, nie rozpisuj się.`;
     fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
   };
 
   const handleDetailIngredientsSubmit = () => {
-    const detailPrompt = `Odszyfruj i wyodrębnij skład produktu spożywczego z tego tekst: ${ingredients}. A teraz jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
+    const detailPrompt = `jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 250 znaków.${ingredients}`;
     fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
   };
 

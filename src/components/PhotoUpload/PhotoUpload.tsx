@@ -16,21 +16,39 @@ const PhotoUpload = () => {
       if (!files || files.length === 0) {
         throw new Error('Nie wykryto pliku.');
       }
-
+  
       const file = files[0];
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `photos/${fileName}`;
-
+  
       let { error: uploadError } = await supabase.storage
         .from('photos')
         .upload(filePath, file);
-
+  
       if (uploadError) {
         throw uploadError;
       }
+  
+      // Pobierz publiczny URL przesłanego obrazu
+      const { data } = supabase.storage
+      
+        .from('photos')
+        .getPublicUrl(filePath);
 
-      alert('Plik został przesłany!');
+      const { error: insertError } = await supabase
+        .from('photos')
+        .insert([
+          {
+            url: data.publicUrl
+          }
+        ]);
+  
+      if (insertError) {
+        throw insertError;
+      }
+  
+      alert('Plik został przesłany i rekord został dodany do bazy danych!');
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);

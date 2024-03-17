@@ -1,14 +1,14 @@
 @import '../../styles/mixins';
 
 .wrapper {
-  position: absolute;
-  top: 0px;
-  height: 64px;
+  //position: absolute;
+  //top: 0px;
+  height: 125px;
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0px 8px 0px 10px;
+  justify-content: center;
+  padding: 40px 15px 15px 15px;
   background-color: #0d1117;
   z-index: 100;
 }
@@ -17,10 +17,10 @@
   cursor: pointer;
   transform: translateY(-5px);
 
-  img {
-    width: 54px;
-    height: 54px;
-  }
+  //img {
+  //  width: 54px;
+  //  height: 54px;
+  //}
 
   &:hover {
     // background-color: #8a2be2;
@@ -40,13 +40,13 @@
   font-weight: 600;
 }
 
-.image {
+/* .image {
   display: flex;
   align-items: center;
   height: auto;
   padding-top: 16px;
 }
-
+ */
 .menuBackground {
   position: absolute;
   background-color: #0d1117cc;
@@ -66,9 +66,9 @@
   padding: 10px;
   width: 100%;
   min-height: 30%;
-  border-radius: 0px 0px 8px 8px ;
-  li{
-    margin:10px 0px 10px 0px;
+  border-radius: 0px 0px 8px 8px;
+  li {
+    margin: 10px 0px 10px 0px;
   }
 }
 

@@ -1,0 +1,13 @@
+.button {
+  background-color: transparent;
+  color: #f4f4f4;
+  padding: 10px 20px;
+  width: 210px;
+  font-size: 18px;
+  border: 1px solid#f4f4f4;
+  border-radius: 8px;
+  text-transform: uppercase;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
+}

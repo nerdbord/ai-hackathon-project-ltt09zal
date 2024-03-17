@@ -1,7 +1,7 @@
 @import '../../styles/mixins';
 
 .button {
-  background-color: #8a2be2;
+  background-color: #4d1c91;
   color: #ffffff;
   padding: 20px 30px;
   font-size: 25px;
@@ -15,7 +15,7 @@
     transform 0.3s;
 
   &:hover {
-    background-color: #8a2be2;
+    background-color: #4d1c91;
     transform: scale(1.05);
   }
   &:disabled {

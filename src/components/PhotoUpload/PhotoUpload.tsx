@@ -10,9 +10,10 @@ type Props = {
 const PhotoUpload = ({ onClick }: Props) => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { setImageUrl, textOcr } = useStore();
+  const { setImageUrl, textOcr, setOpen } = useStore();
   const triggerCamera = () => {
     fileInputRef.current?.click();
+    setOpen(true);
   };
 
   const uploadPhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +58,7 @@ const PhotoUpload = ({ onClick }: Props) => {
       setUploading(false);
     }
   };
+
 
   return (
     <div>

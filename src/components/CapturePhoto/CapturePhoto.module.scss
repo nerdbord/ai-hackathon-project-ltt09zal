@@ -1,25 +1,26 @@
 .container {
-    width: 100%;
-    max-width: 500px;
-    overflow: hidden;
-    margin: 40px 0px 20px 0px;
-    display: flex;
-    flex-direction: column;
-    gap:20px;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 3;
+  width: 100%;
+  max-width: 500px;
+  overflow: hidden;
+  margin: 40px 0px 20px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 3;
 }
 
 .preview {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    overflow-x: hidden ;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  overflow-x: hidden;
+  border: 1px solid #ff7708;
 }
 
 .buttonsContainer {
-    display: flex;
-    gap: 24px;
+  display: flex;
+  gap: 24px;
 }

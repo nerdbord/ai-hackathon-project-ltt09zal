@@ -1,6 +1,6 @@
 {
-    "name": "Zdrowie-Info",
-    "short_name": "Zdrowie-Info",
+    "name": "zdrowe-Info",
+    "short_name": "zdrowe-Info",
     "theme_color": "#FFFFFF",
     "background_color": "#FFFFFF",
     "start_url": "/",
@@ -457,4 +457,3 @@
         }
       ]
     }
-

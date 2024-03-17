@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Call.module.scss';
+import { useStore } from '@/store/useStore';
 
 export const Call = () => {
   const [input, setInput] = useState<string>('');
@@ -10,6 +11,8 @@ export const Call = () => {
   const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
+
+  const { initCamera, startOcr, textOcr, setTextOcr } = useStore();
   // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   // const [selectedVoice, setSelectedVoice] =
   //   useState<SpeechSynthesisVoice | null>(null);
@@ -74,8 +77,7 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  const ingredients =
-    'przecier pomidorowy 62%, cukier, ocet, sól, skrobia kukurydziana modyfikowana, aromat naturalny. Produkt może zawierać seler.';
+  const ingredients = textOcr
 
   const handleBasicIngredientsSubmit = () => {
     const basicPrompt = `Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;

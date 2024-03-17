@@ -119,7 +119,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   }
 
   async function handleTakePhoto(): Promise<void> {
-    closeCamera();
     try {
       if (videoRef.current) {
         const imageData: Base64 = await takePhotoHandler(videoRef.current);
@@ -128,6 +127,7 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
     } catch (error) {
       console.error('Error taking photo:', error);
     }
+    closeCamera();
   }
 
   const analizePhoto = async (): Promise<void> => {

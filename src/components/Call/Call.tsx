@@ -137,7 +137,7 @@ export const Call = () => {
           />
           <Button
             onClick={testowo}
-            disabled={loadingBasic || loadingDetails || loadingFollowUp}
+            disabled={textOcr === '' ? true : false}
             text={'ZATWIERDŹ'}
           />
         </div>
@@ -189,16 +189,7 @@ export const Call = () => {
             </div>
           </>
         )}
-        {followUpResponse && (
-          <div>
-            <div className={styles.response}>
-              {followUpResponse}{' '}
-              {/* <button onClick={() => speak(followUpResponse)}>
-                Czytaj odpowiedź na pytanie
-              </button> */}
-            </div>
-          </div>
-        )}
+
         <div className={styles.buttonBox}>
           {!showDetails && basicResponse && (
             <Button

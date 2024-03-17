@@ -28,6 +28,7 @@ export default async function handler(
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4-vision-preview',
+      max_tokens: 1500,
       messages: [
         {
           role: 'user',

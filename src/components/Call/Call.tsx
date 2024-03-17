@@ -87,7 +87,7 @@ export const Call = () => {
         }),
       });
       const data = await response.json();
-      console.log(data.text);
+      console.log('to wyczytal:', data.text);
       setTextOcr(data.text);
       // testowo();
     } catch (error) {
@@ -204,15 +204,6 @@ export const Call = () => {
           </div>
         )}
 
-        {!showDetails && basicResponse && (
-          <button
-            className={styles.button}
-            onClick={() => setShowDetails(true)}
-            disabled={loadingDetails || loadingBasic}
-          >
-            {loadingDetails ? 'Ładowanie...' : 'Szczegóły'}
-          </button>
-        )}
 
         <div className={styles.buttonBox}>
           {!showDetails && basicResponse && (

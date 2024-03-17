@@ -39,8 +39,8 @@ const MainScreen = () => {
     setInitCamera(false);
     setOpen(false);
   };
-  useEffect(() => {
-  }, [imageUrl]);
+  // useEffect(() => {
+  // }, [imageUrl]);
   return (
     <main className={styles.wrapper}>
       {!open && (

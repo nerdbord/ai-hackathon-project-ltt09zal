@@ -116,6 +116,7 @@ export const Call = () => {
       const data = await response.json();
       console.log(data.text);
       setTextOcr(data.text);
+      testowo();
     } catch (error) {
       console.error('Error calling OpenAI:', error);
     }
@@ -166,14 +167,14 @@ export const Call = () => {
 
   return (
     <div className={styles.callContainer}>
-      <Button
+      {/* <Button
         onClick={responseImg}
         text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-      />
+      /> */}
       {/* <PhotoUpload /> */}
 
       <Button
-        onClick={testowo}
+        onClick={responseImg}
         disabled={loadingBasic || loadingDetails || loadingFollowUp}
         text={'ZATWIERDŹ'}
       />
@@ -181,9 +182,9 @@ export const Call = () => {
       <div className={styles.responseContainer}>
 
         <div className={styles.buttonBox}>
-          <Button
-            onClick={GetOcrText}
-            text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+          <PhotoUpload
+            // onClick={GetOcrText}
+            // text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
           />
           <Button
             onClick={testowo}

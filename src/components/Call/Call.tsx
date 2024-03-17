@@ -78,8 +78,8 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  // const ingredients = textOcr;
-  const ingredients = "olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy)."
+  const ingredients = textOcr;
+  // const ingredients = "olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy)."
 
 
   const GetOcrText = () => {

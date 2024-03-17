@@ -5,6 +5,7 @@ import { useStore } from '@/store/useStore';
 import Button from '../Button/Button';
 import OpenAI from 'openai';
 import PhotoUpload from '../PhotoUpload/PhotoUpload';
+import test from 'node:test';
 export const Call = () => {
   const [input, setInput] = useState<string>('');
 
@@ -87,10 +88,11 @@ export const Call = () => {
       const data = await response.json();
       console.log('to wyczytal:', data.text);
       setTextOcr(data.text);
+      testowo();
+      setImageUrl('');
     } catch (error) {
       console.error('Error calling OpenAI:', error);
     }
-    setImageUrl('')
     setLoadingBasic(false);
   };
 
@@ -129,21 +131,15 @@ export const Call = () => {
     setLoadingBasic(false);
     setLoadingDetails(false);
     setLoadingFollowUp(false);
-    setImageUrl('')
-    setOpen(false)
+    setImageUrl('');
+    setOpen(false);
   };
-  useEffect(() => {
-    if (textOcr) {
-      testowo();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [textOcr]);
+
   return (
     <div className={styles.callContainer}>
-
       {!basicResponse && (
         <Button
-          onClick={responseImg} // bezpośrednie wywołanie responseImg tutaj
+          onClick={responseImg}
           disabled={loadingBasic || loadingDetails || loadingFollowUp}
           text={'ANALIZUJ'}
         />
@@ -152,15 +148,10 @@ export const Call = () => {
       <div className={styles.responseContainer}>
         <div className={styles.buttonBox}></div>
 
-        {loadingBasic ? (
-          <div className={styles.spinner}>Loading...</div>
-        ) : (
-          basicResponse &&
-          !followUpResponse && !detailResponse && (
-            <div>
-              <div className={styles.response}>{basicResponse} </div>
-            </div>
-          )
+        {basicResponse && !followUpResponse && !detailResponse && (
+          <div>
+            <div className={styles.response}>{basicResponse} </div>
+          </div>
         )}
 
         {showDetails && !followUpResponse && (

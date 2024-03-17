@@ -86,7 +86,7 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  /*  const ingredients = textOcr;
+   const ingredients = textOcr;
 
   const GetOcrText = () => {
     setStartOcr(!startOcr);
@@ -109,35 +109,9 @@ export const Call = () => {
       fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
       setInput('');
     }
-  }; */
-
-  // const ingredients = textOcr;
-  const ingredients =
-    'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
-
-  const GetOcrText = () => {
-    setStartOcr(!startOcr);
-    setOpen(true);
   };
 
-  const handleBasicIngredientsSubmit = () => {
-    const basicPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest zdrowy, czy mam go ograniczać, czy jest coś niezdrowego itd. dwa krótkie zdania od asystenta, nie rozpisuj się.`;
-    fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
-  };
-
-  const handleDetailIngredientsSubmit = () => {
-    const detailPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków`;
-    fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
-  };
-
-  const handleFollowUpQuestionSubmit = () => {
-    if (input) {
-      const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje: ${detailResponse}. Użytkownik pyta o ten produkt: "${input}". Proszę udzielić odpowiedzi.`;
-      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
-      setInput('');
-    }
-  };
-
+  
   const testowo = () => {
     handleBasicIngredientsSubmit();
     handleDetailIngredientsSubmit();

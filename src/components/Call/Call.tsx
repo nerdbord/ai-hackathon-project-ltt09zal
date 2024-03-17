@@ -123,9 +123,9 @@ export const Call = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl]);
 
-  // const ingredients = textOcr;
-  const ingredients =
-    'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
+  const ingredients = textOcr;
+  // const ingredients =
+  //   'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
 
   const GetOcrText = () => {
     setStartOcr(!startOcr);
@@ -182,15 +182,7 @@ export const Call = () => {
       <div className={styles.responseContainer}>
 
         <div className={styles.buttonBox}>
-          <PhotoUpload
-            // onClick={GetOcrText}
-            // text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-          />
-          <Button
-            onClick={testowo}
-            disabled={textOcr === '' ? true : false}
-            text={'ZATWIERDŹ'}
-          />
+
         </div>
 
         {loadingBasic ? (

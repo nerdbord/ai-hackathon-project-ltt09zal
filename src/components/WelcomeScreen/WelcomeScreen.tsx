@@ -3,6 +3,7 @@ import Header from '../Header/Header';
 import MainScreen from '../Main/MainScreen';
 import { motion } from 'framer-motion';
 import styles from './WelcomeScreen.module.scss';
+import PhotoUpload from '../PhotoUpload/PhotoUpload';
 
 const WelcomeScreen = () => {
   const [showContent, setShowContent] = useState(false);
@@ -20,6 +21,7 @@ const WelcomeScreen = () => {
       <div className={styles.main_wrapper}>
         <Header />
         <MainScreen />
+        <PhotoUpload />
       </div>
     );
   }

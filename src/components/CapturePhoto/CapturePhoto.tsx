@@ -5,7 +5,6 @@ import Image from 'next/image';
 import LoaderSpinner from '../LoaderSpinner/LoaderSpinner';
 import ocr from '@/utils/ocr';
 import { useStore } from '@/store/useStore';
-import Button from '../Button/Button';
 
 type Base64 = string;
 
@@ -18,7 +17,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   const [base64img, setBase64img] = useState<Base64>('');
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     initCamera,
@@ -152,44 +150,33 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
     setLoading(false);
   };
 
-  const triggerCamera = () => {
-    fileInputRef.current?.click();
-  };
-  
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) {
-      return;
-    }
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setBase64img(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
   return (
     <div className={styles.container}>
       {base64img === '' ? (
-        <div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleFileChange}
-            disabled={isLoading}
-            style={{ display: 'none' }}
-          />
-          <Button
-            text={isLoading ? 'PRZESYŁANIE...' : 'ZRÓB ZDJĘCIE'}
-            onClick={triggerCamera}
-            disabled={isLoading}
-          />
-        </div>
+        <>
+          {/* View with open camera - ready to take a shot! */}
+          {isCameraOpen ? (
+            <div
+              className={styles.container}
+              style={{ cursor: 'pointer' }}
+              // onClick={handleTakePhoto}
+            >
+              <video className={styles.preview} ref={videoRef} autoPlay />
+              {/* <p>Kliknij aby zrobić zdjęcie.</p> */}
+            </div>
+          ) : (
+            <div
+              onClick={() => setIsCameraOpen(true)}
+              style={{ cursor: 'pointer' }}
+            >
+              <Camera />
+              <p>Kliknij aby uruchomić aparat.</p>
+            </div>
+          )}
+        </>
       ) : (
         <div className={styles.container}>
+          {/* Opens after taking Photo */}
           <div style={{ position: 'relative' }}>
             <Image
               className={styles.preview}
@@ -201,6 +188,7 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
             />
             <LoaderSpinner show={isLoading} onImage />
           </div>
+
           {enableControls && (
             <div className={styles.buttonsContainer}>
               <button

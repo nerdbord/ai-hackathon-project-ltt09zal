@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 
+html {
+  max-width: 520px;
+  margin: 0 auto;
+  background: black;
+}
+
+body {
+  max-width: 100%;
+  color: #f4f4f4;
+  background-color: #0d1117;
+  font-family: 'Manrope', sans-serif;
+  height: 100vh;
+}
+
 body,
 button,
 input,
@@ -21,15 +35,6 @@ a {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-html,
-body {
-  max-width: 100%;
-  color: #f4f4f4;
-  background-color: #0d1117;
-  font-family: 'Manrope', sans-serif;
-  height: 100vh;
 }
 
 ul {

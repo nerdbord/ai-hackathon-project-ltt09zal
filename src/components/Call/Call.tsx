@@ -198,6 +198,7 @@ export const Call = () => {
           </button>
         )}
       </div>
+      {textOcr}
     </div>
   );
 };

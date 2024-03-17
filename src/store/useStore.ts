@@ -13,6 +13,8 @@ interface StoreProps {
   setCurrApiKey: (value: number) => void;
   imageUrl: string;
   setImageUrl: (url: string) => void;
+  basicResponse: string;
+  setBasicResponse: (url: string) => void;
 }
 
 export const useStore = create<StoreProps>((set) => ({
@@ -28,4 +30,6 @@ export const useStore = create<StoreProps>((set) => ({
   setCurrApiKey: (value) => set({ currApiKey: value }),
   imageUrl: '',
   setImageUrl: (url) => set({ imageUrl: url }),
+  basicResponse: '',
+  setBasicResponse: (string) => set({ basicResponse: string }),
 }));

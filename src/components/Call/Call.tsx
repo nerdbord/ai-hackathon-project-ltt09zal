@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Call.module.scss';
 import { useStore } from '@/store/useStore';
@@ -7,7 +7,7 @@ import OpenAI from 'openai';
 import PhotoUpload from '../PhotoUpload/PhotoUpload';
 export const Call = () => {
   const [input, setInput] = useState<string>('');
-  const [basicResponse, setBasicResponse] = useState<string>('');
+
   const [detailResponse, setDetailResponse] = useState<string>('');
   const [followUpResponse, setFollowUpResponse] = useState<string>('');
   const [loadingBasic, setLoadingBasic] = useState<boolean>(false);
@@ -26,37 +26,11 @@ export const Call = () => {
     setOpen,
     open,
     imageUrl,
-    setImageUrl
+    setImageUrl,
+    basicResponse,
+    setBasicResponse,
   } = useStore();
 
-  // const openai = new OpenAI({
-  //   apiKey: process.env.NEXT_PUBLIC_VISION_KEY,
-  // });
-
-  // const responseImg = useCallback(async () => {
-  //   try {
-  //     const response = await openai.chat.completions.create({
-  //       model: 'gpt-4-vision-preview',
-  //       messages: [
-  //         {
-  //           role: 'user',
-  //           content: 'co jest na tym obrazku ?',
-  //         },
-  //         {
-  //           role: 'system',
-  //           content: imageUrl,
-  //         },
-  //       ],
-  //     });
-  //     console.log(response.choices[0]);
-  //   } catch (error) {
-  //     console.error('Error calling OpenAI:', error);
-  //   }
-  // }, [imageUrl]);
-
-  // const handleSendClick = () => {
-  //   responseImg();
-  // };
 
   const fetchGPTResponse = async (
     prompt: string,
@@ -102,9 +76,8 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-
   const responseImg = useCallback(async () => {
-    console.log(imageUrl)
+    console.log(imageUrl);
     try {
       const response = await fetch('/api/vision-ocr', {
         method: 'POST',
@@ -120,17 +93,13 @@ export const Call = () => {
     } catch (error) {
       console.error('Error calling OpenAI:', error);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl]);
 
   const ingredients = textOcr;
   // const ingredients =
   //   'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
 
-  const GetOcrText = () => {
-    setStartOcr(!startOcr);
-    setOpen(true);
-  };
 
   const handleBasicIngredientsSubmit = () => {
     const basicPrompt = `jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu: ${ingredients}. Czy jest zdrowy, czy mam go ograniczać, czy jest szkodliwy itd. dwa krótkie zdania od asystenta, nie rozpisuj się.`;
@@ -177,18 +146,16 @@ export const Call = () => {
         text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
       /> */}
       {/* <PhotoUpload /> */}
-
-      <Button
-        onClick={responseImg}
-        disabled={loadingBasic || loadingDetails || loadingFollowUp}
-        text={'ZATWIERDŹ'}
-      />
+      {!basicResponse && (
+        <Button
+          onClick={responseImg}
+          disabled={loadingBasic || loadingDetails || loadingFollowUp}
+          text={'ZATWIERDŹ'}
+        />
+      )}
 
       <div className={styles.responseContainer}>
-
-        <div className={styles.buttonBox}>
-
-        </div>
+        <div className={styles.buttonBox}></div>
 
         {loadingBasic ? (
           <div className={styles.spinner}>Loading...</div>
@@ -246,12 +213,6 @@ export const Call = () => {
             {loadingDetails ? 'Ładowanie...' : 'Szczegóły'}
           </button>
         )}
-        {basicResponse && (
-          <button className={styles.button} onClick={handleReset}>
-            Skanuj następne
-          </button>
-        )}
-
 
         <div className={styles.buttonBox}>
           {!showDetails && basicResponse && (
@@ -265,7 +226,6 @@ export const Call = () => {
             <Button text={'Skanuj następne'} onClick={handleReset} />
           )}
         </div>
-
       </div>
     </div>
   );

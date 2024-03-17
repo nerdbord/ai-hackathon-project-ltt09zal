@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import styles from './MainScreen.module.scss';
 import ScanButton from '../ScanButton/ScanButton';
 import { motion, AnimatePresence } from 'framer-motion';
-import CapturePhoto from '../CapturePhoto/CapturePhoto';
+// import CapturePhoto from '../CapturePhoto/CapturePhoto';
 import { useStore } from '@/store/useStore';
 import { Call } from '../Call/Call';
 import Close from '../icons/Close';
 import Button from '../Button/Button';
+import PhotoUpload from '../PhotoUpload/PhotoUpload';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -65,8 +66,8 @@ const MainScreen = () => {
               </div>
             </div>
           </div>
-
-          <ScanButton onClick={handleOpenScan} text={'Skanuj produkt'} />
+<PhotoUpload />
+          {/* <ScanButton onClick={handleOpenScan} text={'Skanuj produkt'} /> */}
         </div>
       )}
 
@@ -80,7 +81,7 @@ const MainScreen = () => {
         className={styles.bottomSheet}
         // onClick={() => setOpen(!open)}
       />
-      <CapturePhoto />
+      {/* <CapturePhoto /> */}
       <AnimatePresence initial={false}>
         {open && (
           <motion.div

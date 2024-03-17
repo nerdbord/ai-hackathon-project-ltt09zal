@@ -1,225 +1,225 @@
-import { useState, useEffect, useRef } from 'react';
-import styles from './CapturePhoto.module.scss';
-import Camera from '../icons/Camera';
-import Image from 'next/image';
-import LoaderSpinner from '../LoaderSpinner/LoaderSpinner';
-import ocr from '@/utils/ocr';
-import { useStore } from '@/store/useStore';
+// import { useState, useEffect, useRef } from 'react';
+// import styles from './CapturePhoto.module.scss';
+// import Camera from '../icons/Camera';
+// import Image from 'next/image';
+// import LoaderSpinner from '../LoaderSpinner/LoaderSpinner';
+// import ocr from '@/utils/ocr';
+// import { useStore } from '@/store/useStore';
 
-type Base64 = string;
+// type Base64 = string;
 
-interface Props {
-  enableControls?: boolean;
-}
+// interface Props {
+//   enableControls?: boolean;
+// }
 
-const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [base64img, setBase64img] = useState<Base64>('');
-  const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+// const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
+//   const [isLoading, setLoading] = useState<boolean>(false);
+//   const [base64img, setBase64img] = useState<Base64>('');
+//   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
+//   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const {
-    initCamera,
-    startOcr,
-    textOcr,
-    setTextOcr,
-    currApiKey,
-    setCurrApiKey,
-  } = useStore();
+//   const {
+//     initCamera,
+//     startOcr,
+//     textOcr,
+//     setTextOcr,
+//     currApiKey,
+//     setCurrApiKey,
+//   } = useStore();
 
-  useEffect(() => {
-    if (initCamera) {
-      setIsCameraOpen(true);
-    } else {
-      setTextOcr('');
-      setBase64img('');
-      setIsCameraOpen(false);
-      closeCamera();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initCamera]);
+//   useEffect(() => {
+//     if (initCamera) {
+//       setIsCameraOpen(true);
+//     } else {
+//       setTextOcr('');
+//       setBase64img('');
+//       setIsCameraOpen(false);
+//       closeCamera();
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [initCamera]);
 
-  useEffect(() => {
-    if (!isCameraOpen && initCamera) {
-      setTextOcr('');
-      setBase64img('');
-      setIsCameraOpen(true);
-    }
+//   useEffect(() => {
+//     if (!isCameraOpen && initCamera) {
+//       setTextOcr('');
+//       setBase64img('');
+//       setIsCameraOpen(true);
+//     }
 
-    if (isCameraOpen && initCamera) {
-      handleTakePhoto();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startOcr]);
+//     if (isCameraOpen && initCamera) {
+//       handleTakePhoto();
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [startOcr]);
 
-  useEffect(() => {
-    initCamera && base64img !== '' && textOcr === '' && analizePhoto();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [base64img]);
+//   useEffect(() => {
+//     initCamera && base64img !== '' && textOcr === '' && analizePhoto();
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [base64img]);
 
-  useEffect(() => {
-    let videoElement = videoRef.current;
-    async function initializeCamera() {
-      try {
-        if (videoElement) {
-          const mediaStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: 'environment' } },
-            audio: false,
-          });
-          videoElement.srcObject = mediaStream;
-          videoElement.play();
-          setIsCameraOpen(true);
-        }
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-      }
-    }
+//   useEffect(() => {
+//     let videoElement = videoRef.current;
+//     async function initializeCamera() {
+//       try {
+//         if (videoElement) {
+//           const mediaStream = await navigator.mediaDevices.getUserMedia({
+//             video: { facingMode: { ideal: 'environment' } },
+//             audio: false,
+//           });
+//           videoElement.srcObject = mediaStream;
+//           videoElement.play();
+//           setIsCameraOpen(true);
+//         }
+//       } catch (error) {
+//         console.error('Error accessing camera:', error);
+//       }
+//     }
 
-    if (isCameraOpen) {
-      initializeCamera();
-    }
+//     if (isCameraOpen) {
+//       initializeCamera();
+//     }
 
-    return () => {
-      closeCamera();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCameraOpen]);
+//     return () => {
+//       closeCamera();
+//     };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [isCameraOpen]);
 
-  function closeCamera() {
-    if (videoRef.current) {
-      const mediaStream = videoRef.current.srcObject as MediaStream;
-      if (mediaStream) {
-        mediaStream.getTracks().forEach((track) => track.stop());
-      }
-    }
-  }
+//   function closeCamera() {
+//     if (videoRef.current) {
+//       const mediaStream = videoRef.current.srcObject as MediaStream;
+//       if (mediaStream) {
+//         mediaStream.getTracks().forEach((track) => track.stop());
+//       }
+//     }
+//   }
 
-  if (!initCamera) {
-    closeCamera();
-    return null;
-  }
+//   if (!initCamera) {
+//     closeCamera();
+//     return null;
+//   }
 
-  async function takePhotoHandler(
-    videoElement: HTMLVideoElement
-  ): Promise<Base64> {
-    try {
-      const canvasElement = document.createElement('canvas');
-      const canvasContext = canvasElement.getContext('2d');
+//   async function takePhotoHandler(
+//     videoElement: HTMLVideoElement
+//   ): Promise<Base64> {
+//     try {
+//       const canvasElement = document.createElement('canvas');
+//       const canvasContext = canvasElement.getContext('2d');
 
-      canvasElement.width = videoElement.videoWidth;
-      canvasElement.height = videoElement.videoHeight;
+//       canvasElement.width = videoElement.videoWidth;
+//       canvasElement.height = videoElement.videoHeight;
 
-      canvasContext?.drawImage(
-        videoElement,
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
+//       canvasContext?.drawImage(
+//         videoElement,
+//         0,
+//         0,
+//         canvasElement.width,
+//         canvasElement.height
+//       );
 
-      const imageData = canvasElement.toDataURL('image/png');
-      return imageData;
-    } catch (error) {
-      throw error;
-    }
-  }
+//       const imageData = canvasElement.toDataURL('image/png');
+//       return imageData;
+//     } catch (error) {
+//       throw error;
+//     }
+//   }
 
-  async function handleTakePhoto(): Promise<void> {
-    setIsCameraOpen(false);
-    closeCamera();
-    try {
-      if (videoRef.current) {
-        const imageData: Base64 = await takePhotoHandler(videoRef.current);
-        imageData.length > 20 && setBase64img(imageData);
-      }
-    } catch (error) {
-      console.error('Error taking photo:', error);
-    }
-  }
+//   async function handleTakePhoto(): Promise<void> {
+//     setIsCameraOpen(false);
+//     closeCamera();
+//     try {
+//       if (videoRef.current) {
+//         const imageData: Base64 = await takePhotoHandler(videoRef.current);
+//         imageData.length > 20 && setBase64img(imageData);
+//       }
+//     } catch (error) {
+//       console.error('Error taking photo:', error);
+//     }
+//   }
 
-  const analizePhoto = async (): Promise<void> => {
-    setLoading(true);
-    if (base64img !== 'data:,') {
+//   const analizePhoto = async (): Promise<void> => {
+//     setLoading(true);
+//     if (base64img !== 'data:,') {
       
-      try {
-        const { ocrText, usedApiKeyNo } = await ocr(base64img, currApiKey);
-        console.log(ocrText);
-        // Set the ocr text into zustand store
-        setTextOcr(ocrText);
+//       try {
+//         const { ocrText, usedApiKeyNo } = await ocr(base64img, currApiKey);
+//         console.log(ocrText);
+//         // Set the ocr text into zustand store
+//         setTextOcr(ocrText);
 
-        // Update last used API key index
-        if (currApiKey !== usedApiKeyNo) {
-          setCurrApiKey(usedApiKeyNo);
-        }
-      } catch (error) {
-        console.error('Error fetching OCR results:', error);
-      }
-    }else{
-      setBase64img('')
-      setIsCameraOpen(true);
-    }
-    setLoading(false);
-  };
+//         // Update last used API key index
+//         if (currApiKey !== usedApiKeyNo) {
+//           setCurrApiKey(usedApiKeyNo);
+//         }
+//       } catch (error) {
+//         console.error('Error fetching OCR results:', error);
+//       }
+//     }else{
+//       setBase64img('')
+//       setIsCameraOpen(true);
+//     }
+//     setLoading(false);
+//   };
 
-  return (
-    <div className={styles.container}>
-      {base64img === '' ? (
-        <>
-          {/* View with open camera - ready to take a shot! */}
-          {isCameraOpen ? (
-            <div
-              className={styles.container}
-              style={{ cursor: 'pointer' }}
-              // onClick={handleTakePhoto}
-            >
-              <video className={styles.preview} ref={videoRef} autoPlay />
-              {/* <p>Kliknij aby zrobić zdjęcie.</p> */}
-            </div>
-          ) : (
-            <div
-              onClick={() => setIsCameraOpen(true)}
-              style={{ cursor: 'pointer' }}
-            >
-              <Camera />
-              <p>Kliknij aby uruchomić aparat.</p>
-            </div>
-          )}
-        </>
-      ) : (
-        <div className={styles.container}>
-          {/* Opens after taking Photo */}
-          <div style={{ position: 'relative' }}>
-            <Image
-              className={styles.preview}
-              src={base64img}
-              width={100}
-              height={100}
-              alt="Taken photo"
-              style={{ opacity: isLoading ? 0.7 : 1 }}
-            />
-            <LoaderSpinner show={isLoading} onImage />
-          </div>
+//   return (
+//     <div className={styles.container}>
+//       {base64img === '' ? (
+//         <>
+//           {/* View with open camera - ready to take a shot! */}
+//           {isCameraOpen ? (
+//             <div
+//               className={styles.container}
+//               style={{ cursor: 'pointer' }}
+//               // onClick={handleTakePhoto}
+//             >
+//               <video className={styles.preview} ref={videoRef} autoPlay />
+//               {/* <p>Kliknij aby zrobić zdjęcie.</p> */}
+//             </div>
+//           ) : (
+//             <div
+//               onClick={() => setIsCameraOpen(true)}
+//               style={{ cursor: 'pointer' }}
+//             >
+//               <Camera />
+//               <p>Kliknij aby uruchomić aparat.</p>
+//             </div>
+//           )}
+//         </>
+//       ) : (
+//         <div className={styles.container}>
+//           {/* Opens after taking Photo */}
+//           <div style={{ position: 'relative' }}>
+//             <Image
+//               className={styles.preview}
+//               src={base64img}
+//               width={100}
+//               height={100}
+//               alt="Taken photo"
+//               style={{ opacity: isLoading ? 0.7 : 1 }}
+//             />
+//             <LoaderSpinner show={isLoading} onImage />
+//           </div>
 
-          {enableControls && (
-            <div className={styles.buttonsContainer}>
-              <button
-                onClick={() => {
-                  setIsCameraOpen(true);
-                  setBase64img('');
-                  setTextOcr('');
-                }}
-              >
-                Zrób nowe
-              </button>
-              <button onClick={analizePhoto} disabled={isLoading}>
-                Analizuj
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+//           {enableControls && (
+//             <div className={styles.buttonsContainer}>
+//               <button
+//                 onClick={() => {
+//                   setIsCameraOpen(true);
+//                   setBase64img('');
+//                   setTextOcr('');
+//                 }}
+//               >
+//                 Zrób nowe
+//               </button>
+//               <button onClick={analizePhoto} disabled={isLoading}>
+//                 Analizuj
+//               </button>
+//             </div>
+//           )}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
 
-export default CapturePhoto;
+// export default CapturePhoto;

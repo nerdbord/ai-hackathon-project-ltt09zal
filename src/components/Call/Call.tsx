@@ -1,8 +1,10 @@
+'use client'
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Call.module.scss';
 import { useStore } from '@/store/useStore';
 import Button from '../Button/Button';
-import OpenAI from "openai";
+import OpenAI from 'openai';
+import PhotoUpload from '../PhotoUpload/PhotoUpload';
 export const Call = () => {
   const [input, setInput] = useState<string>('');
   const [basicResponse, setBasicResponse] = useState<string>('');
@@ -12,41 +14,49 @@ export const Call = () => {
   const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string>('https://sdpl.b-cdn.net/17158-large_default/obrazek-obrazki-10paz.jpg')
-  const { initCamera, startOcr, textOcr, setTextOcr, setStartOcr, setOpen, open } = useStore();
+  // const [imageUrl, setImageUrl] = useState<string>(
+  //   'https://sdpl.b-cdn.net/17158-large_default/obrazek-obrazki-10paz.jpg'
+  // );
+  const {
+    initCamera,
+    startOcr,
+    textOcr,
+    setTextOcr,
+    setStartOcr,
+    setOpen,
+    open,
+    imageUrl,
+    setImageUrl
+  } = useStore();
 
-  const openai = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_VISION_KEY,
-});
+  // const openai = new OpenAI({
+  //   apiKey: process.env.NEXT_PUBLIC_VISION_KEY,
+  // });
 
-const responseImg = useCallback(async () => {
-  try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4-vision-preview',
-      messages: [
-        {
-          role: 'user',
-          content: 'co jest na tym obrazku ?',
-        },
-        {
-          role: 'system',
-          content: imageUrl,
-        },
-      ],
-    });
-    console.log(response.choices[0]);
-  } catch (error) {
-    console.error('Error calling OpenAI:', error);
-  }
-}, [imageUrl]);
+  // const responseImg = useCallback(async () => {
+  //   try {
+  //     const response = await openai.chat.completions.create({
+  //       model: 'gpt-4-vision-preview',
+  //       messages: [
+  //         {
+  //           role: 'user',
+  //           content: 'co jest na tym obrazku ?',
+  //         },
+  //         {
+  //           role: 'system',
+  //           content: imageUrl,
+  //         },
+  //       ],
+  //     });
+  //     console.log(response.choices[0]);
+  //   } catch (error) {
+  //     console.error('Error calling OpenAI:', error);
+  //   }
+  // }, [imageUrl]);
 
-const handleSendClick = () => {
-  responseImg();
-};
-
-
-
-
+  // const handleSendClick = () => {
+  //   responseImg();
+  // };
 
   const fetchGPTResponse = async (
     prompt: string,
@@ -92,9 +102,29 @@ const handleSendClick = () => {
     setLoadingFunction(false);
   };
 
-  // const ingredients = textOcr;
-  const ingredients = "olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy)."
 
+  const responseImg = useCallback(async () => {
+    console.log(imageUrl)
+    try {
+      const response = await fetch('/api/vision-ocr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: imageUrl,
+        }),
+      });
+      const data = await response.json();
+      console.log(data.text);
+      setTextOcr(data.text);
+    } catch (error) {
+      console.error('Error calling OpenAI:', error);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageUrl]);
+
+  // const ingredients = textOcr;
+  const ingredients =
+    'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
 
   const GetOcrText = () => {
     setStartOcr(!startOcr);
@@ -136,19 +166,17 @@ const handleSendClick = () => {
 
   return (
     <div className={styles.callContainer}>
-            <Button
-                  onClick={GetOcrText}
-                  text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-                />
-                   <Button
-        text="GPT 4 CZYTA OBRZZEK"
-        onClick={handleSendClick} // Handler przycisku
+      <Button
+        onClick={responseImg}
+        text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
       />
+      {/* <PhotoUpload /> */}
+
       <Button
         onClick={testowo}
         disabled={loadingBasic || loadingDetails || loadingFollowUp}
         text={'ZATWIERDŹ'}
-     />
+      />
 
       <div className={styles.responseContainer}>
         {loadingBasic ? (
@@ -157,10 +185,7 @@ const handleSendClick = () => {
           basicResponse &&
           !followUpResponse && (
             <div>
-              <div className={styles.response}>
-                {basicResponse}{' '}
-  
-              </div>
+              <div className={styles.response}>{basicResponse} </div>
             </div>
           )
         )}
@@ -173,10 +198,7 @@ const handleSendClick = () => {
               detailResponse &&
               !followUpResponse && (
                 <div>
-                  <div className={styles.response}>
-                    {detailResponse}{' '}
-               
-                  </div>
+                  <div className={styles.response}>{detailResponse} </div>
                 </div>
               )
             )}
@@ -199,10 +221,7 @@ const handleSendClick = () => {
         )}
         {followUpResponse && (
           <div>
-            <div className={styles.response}>
-              {followUpResponse}{' '}
-             
-            </div>
+            <div className={styles.response}>{followUpResponse} </div>
           </div>
         )}
 

@@ -141,7 +141,7 @@ export const Call = () => {
             onClick={GetOcrText}
             text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
           />
-          <Button onClick={testowo} text={'ZATWIERDŹ'} />
+         {textOcr && <Button onClick={testowo} text={'ZATWIERDŹ'} />} 
         </div>
         {loadingBasic ? (
           <Spinner />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './Call.module.scss';
 import { useStore } from '@/store/useStore';
 import Button from '../Button/Button';
+import Spinner from '../Spinner/Spinner';
 
 export const Call = () => {
   const [input, setInput] = useState<string>('');
@@ -168,7 +169,7 @@ export const Call = () => {
           />
         </div>
         {loadingBasic ? (
-          <div className={styles.spinner}></div>
+          <Spinner />
         ) : (
           basicResponse &&
           !followUpResponse && (
@@ -176,8 +177,8 @@ export const Call = () => {
               <div className={styles.response}>
                 {basicResponse}{' '}
                 {/* <button onClick={() => speak(basicResponse)}>
-                  Czytaj podstawową odpowiedź
-                </button> */}
+             Czytaj podstawową odpowiedź
+           </button> */}
               </div>
             </div>
           )
@@ -186,7 +187,7 @@ export const Call = () => {
         {showDetails && !followUpResponse && (
           <>
             {loadingDetails ? (
-              <div className={styles.spinner}></div>
+              <Spinner />
             ) : (
               detailResponse &&
               !followUpResponse && (
@@ -201,9 +202,7 @@ export const Call = () => {
               )
             )}
             <div className={styles.details}>
-              <input
-                className={styles.inputField}
-                type="text"
+              <textarea
                 placeholder="Dopytaj o szczegóły"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}

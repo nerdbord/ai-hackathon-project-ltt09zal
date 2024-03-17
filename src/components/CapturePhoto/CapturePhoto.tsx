@@ -18,14 +18,19 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const { initCamera, startOcr, textOcr, setTextOcr } = useStore();
+  const {
+    initCamera,
+    startOcr,
+    textOcr,
+    setTextOcr,
+    currApiKey,
+    setCurrApiKey,
+  } = useStore();
 
   useEffect(() => {
     if (!isCameraOpen && initCamera) {
       setIsCameraOpen(true);
     } else if (isCameraOpen && !initCamera) {
-      // setTextOcr('');
-      // setBase64img('');
       setIsCameraOpen(false);
       closeCamera();
     }
@@ -135,8 +140,15 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   const analizePhoto = async (): Promise<void> => {
     setLoading(true);
     try {
-      const textOCR = await ocr(base64img);
-      setTextOcr(textOCR);
+      const { ocrText, usedApiKeyNo } = await ocr(base64img, currApiKey);
+      console.log(ocrText)
+      // Set the ocr text into zustand store
+      setTextOcr(ocrText);
+
+      // Update last used API key index
+      if (currApiKey !== usedApiKeyNo) {
+        setCurrApiKey(usedApiKeyNo);
+      }
     } catch (error) {
       console.error('Error fetching OCR results:', error);
     } finally {

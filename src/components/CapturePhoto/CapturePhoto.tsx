@@ -44,7 +44,7 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   }, [isCameraOpen]);
 
   useEffect(() => {
-    if (!videoRef.current) {
+    if (initCamera && !videoRef.current) {
       setTextOcr('');
       setBase64img('');
       setIsCameraOpen(true);
@@ -69,7 +69,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
         if (mediaStreamRef) {
           mediaStreamRef.getTracks().forEach((track) => track.stop());
         }
-        console.log('Starting camera');
         const mediaStream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: { ideal: 'environment' } },
           audio: false,
@@ -87,7 +86,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
       const mediaStream = videoRef.current.srcObject as MediaStream;
       if (mediaStream) {
         mediaStream.getTracks().forEach((track) => track.stop());
-        console.log('Closing camera');
         setIsCameraOpen(false);
       }
     }
@@ -151,11 +149,9 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
     }
     setLoading(false);
   };
-  console.log(base64img);
+
   return (
     <div className={styles.container}>
-      <p>{initCamera ? 'initCamera true' : 'initCamera false'}</p>
-      <p>{isCameraOpen ? 'camera open' : 'camera closed'}</p>
       {base64img === '' ? (
         <>
           {/* View with open camera - ready to take a shot! */}

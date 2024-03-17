@@ -80,7 +80,7 @@ const MainScreen = () => {
         className={styles.bottomSheet}
         // onClick={() => setOpen(!open)}
       />
-      <CapturePhoto />
+      {initCamera && <CapturePhoto />}
       <AnimatePresence initial={false}>
         {open && (
           <motion.div

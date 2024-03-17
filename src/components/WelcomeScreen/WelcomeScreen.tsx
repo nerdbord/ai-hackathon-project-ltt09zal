@@ -32,22 +32,22 @@ const WelcomeScreen = () => {
       transition={{ duration: 1 }}
     >
       <motion.img
-        src="/assets/apple.png"
+        src="/assets/apple1.png"
         className={styles.appleIcon1}
         alt="Apple"
       />
       <motion.img
-        src="/assets/apple.png"
+        src="/assets/apple1.png"
         className={styles.appleIcon2}
         alt="Apple"
       />
       <motion.img
-        src="/assets/banana.png"
+        src="/assets/banana1.png"
         className={styles.bananaIcon1}
         alt="banana"
       />
       <motion.img
-        src="/assets/banana.png"
+        src="/assets/banana1.png"
         className={styles.bananaIcon2}
         alt="banana"
       />
@@ -62,7 +62,7 @@ const WelcomeScreen = () => {
         alt="broccoli"
       />
       <motion.img
-        src="/assets/logo.png"
+        src="/assets/logoapp.png"
         className={styles.logo}
         alt="Logo Zdrowe Info"
         initial={{ opacity: 0 }}

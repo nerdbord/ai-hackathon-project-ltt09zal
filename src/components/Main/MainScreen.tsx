@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import styles from './MainScreen.module.scss';
-import Header from '../Header/Header';
 import ScanButton from '../ScanButton/ScanButton';
 import { motion, AnimatePresence } from 'framer-motion';
 import CapturePhoto from '../CapturePhoto/CapturePhoto';
@@ -47,7 +46,7 @@ const MainScreen = () => {
           <div className={styles.intro}>
             <h2>
               <strong>
-                Jak osiągnąć najlepsze efekty{' '}
+                Jak skanować dla lepszych wyników{' '}
                 <span className={styles.intro_span}>?</span>
               </strong>
             </h2>
@@ -97,23 +96,12 @@ const MainScreen = () => {
             className={styles.bottomSheet_container}
           >
             <div className={styles.bottomSheet_content}>
-              <button
-                className={styles.bottomSheet_close}
-                onClick={handleCloseScan}
-              >
-                <Close />
-              </button>
-              <div className={styles.bottomSheet_buttons}>
-                {/* <Button
-                  onClick={GetOcrText}
-                  text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-                /> */}
-                {/* <Button
-                  text={'zatwierdź'}
-                  onClick={() => console.log('zatwierdzone')}
-                /> */}
-              </div>
               <Call />
+              <Button
+                onClick={handleCloseScan}
+                text={'Anuluj'}
+                icon={<Close />}
+              />
             </div>
           </motion.div>
         )}

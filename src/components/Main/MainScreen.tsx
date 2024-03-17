@@ -66,7 +66,7 @@ const MainScreen = () => {
               </div>
             </div>
           </div>
-<PhotoUpload />
+<PhotoUpload onClick={handleOpenScan} />
           {/* <ScanButton onClick={handleOpenScan} text={'Skanuj produkt'} /> */}
         </div>
       )}

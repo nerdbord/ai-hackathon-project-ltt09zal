@@ -47,8 +47,6 @@ const PhotoUpload = ({ onClick }: Props) => {
       if (insertError) {
         throw insertError;
       }
-
-      alert('Plik został przesłany i rekord został dodany do bazy danych!');
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);

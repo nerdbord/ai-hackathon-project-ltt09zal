@@ -28,9 +28,11 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   } = useStore();
 
   useEffect(() => {
-    if (!isCameraOpen && initCamera) {
+    if (initCamera) {
       setIsCameraOpen(true);
-    } else if (isCameraOpen && !initCamera) {
+    } else {
+      setTextOcr('');
+      setBase64img('');
       setIsCameraOpen(false);
       closeCamera();
     }
@@ -44,14 +46,14 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
       setIsCameraOpen(true);
     }
 
-    if (isCameraOpen) {
+    if (isCameraOpen && initCamera) {
       handleTakePhoto();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startOcr]);
 
   useEffect(() => {
-    base64img !== '' && textOcr === '' && analizePhoto();
+    initCamera && base64img !== '' && textOcr === '' && analizePhoto();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [base64img]);
 
@@ -75,8 +77,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
 
     if (isCameraOpen) {
       initializeCamera();
-      setTextOcr('');
-      setBase64img('');
     }
 
     return () => {
@@ -130,7 +130,7 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
     try {
       if (videoRef.current) {
         const imageData: Base64 = await takePhotoHandler(videoRef.current);
-        setBase64img(imageData);
+        imageData.length > 20 && setBase64img(imageData);
       }
     } catch (error) {
       console.error('Error taking photo:', error);
@@ -139,21 +139,26 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
 
   const analizePhoto = async (): Promise<void> => {
     setLoading(true);
-    try {
-      const { ocrText, usedApiKeyNo } = await ocr(base64img, currApiKey);
-      console.log(ocrText)
-      // Set the ocr text into zustand store
-      setTextOcr(ocrText);
+    if (base64img !== 'data:,') {
+      
+      try {
+        const { ocrText, usedApiKeyNo } = await ocr(base64img, currApiKey);
+        console.log(ocrText);
+        // Set the ocr text into zustand store
+        setTextOcr(ocrText);
 
-      // Update last used API key index
-      if (currApiKey !== usedApiKeyNo) {
-        setCurrApiKey(usedApiKeyNo);
+        // Update last used API key index
+        if (currApiKey !== usedApiKeyNo) {
+          setCurrApiKey(usedApiKeyNo);
+        }
+      } catch (error) {
+        console.error('Error fetching OCR results:', error);
       }
-    } catch (error) {
-      console.error('Error fetching OCR results:', error);
-    } finally {
-      setLoading(false);
+    }else{
+      setBase64img('')
+      setIsCameraOpen(true);
     }
+    setLoading(false);
   };
 
   return (

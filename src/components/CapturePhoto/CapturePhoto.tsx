@@ -216,8 +216,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
               </button>
             </div>
           )}
-
-          <code>{textOcr}</code>
         </div>
       )}
     </div>

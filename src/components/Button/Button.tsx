@@ -4,11 +4,12 @@ import styles from './Button.module.scss';
 type Props = {
   text: string;
   onClick?: () => void;
+  disabled?: boolean
 };
 
-const Button = ({ text, onClick }: Props) => {
+const Button = ({ text, onClick, disabled }: Props) => {
   return (
-    <button className={styles.button} onClick={onClick}>
+    <button disabled={disabled} className={styles.button} onClick={onClick}>
       {text}
     </button>
   );

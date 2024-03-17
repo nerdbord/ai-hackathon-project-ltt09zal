@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import styles from './Call.module.scss';
 import { useStore } from '@/store/useStore';
+import { useState } from 'react';
 import Button from '../Button/Button';
 import Spinner from '../Spinner/Spinner';
+import styles from './Call.module.scss';
 
 export const Call = () => {
   const [input, setInput] = useState<string>('');
@@ -139,14 +139,18 @@ export const Call = () => {
         <div className={styles.buttonBox}>
           <Button
             onClick={GetOcrText}
-            text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+            text={textOcr === '' ? 'ZRÓB ZDJĘCIE' : 'POWTÓRZ'}
           />
-          <Button onClick={testowo} text={'ZATWIERDŹ'} />
+          <Button 
+          onClick={testowo} 
+          text={'WYŚLIJ'}
+          hidden={textOcr === '' ? true : false }
+           />
         </div>
         {loadingBasic ? (
           <Spinner />
         ) : (
-          basicResponse &&
+          basicResponse && !detailResponse &&
           !followUpResponse && (
             <div>
               <div className={styles.response}>

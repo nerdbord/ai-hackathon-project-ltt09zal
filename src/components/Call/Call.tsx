@@ -10,25 +10,25 @@ export const Call = () => {
   const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] =
-    useState<SpeechSynthesisVoice | null>(null);
+  // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  // const [selectedVoice, setSelectedVoice] =
+  //   useState<SpeechSynthesisVoice | null>(null);
 
-  useEffect(() => {
-    const voiceOptions = speechSynthesis.getVoices();
-    setVoices(voiceOptions);
-    setSelectedVoice(
-      voiceOptions.find((voice) => voice.lang.startsWith('en')) || null
-    );
-  }, []);
+  // useEffect(() => {
+  //   const voiceOptions = speechSynthesis.getVoices();
+  //   setVoices(voiceOptions);
+  //   setSelectedVoice(
+  //     voiceOptions.find((voice) => voice.lang.startsWith('en')) || null
+  //   );
+  // }, []);
 
-  const speak = (text: string) => {
-    if (text && speechSynthesis) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = selectedVoice || voices[0];
-      speechSynthesis.speak(utterance);
-    }
-  };
+  // const speak = (text: string) => {
+  //   if (text && speechSynthesis) {
+  //     const utterance = new SpeechSynthesisUtterance(text);
+  //     utterance.voice = selectedVoice || voices[0];
+  //     speechSynthesis.speak(utterance);
+  //   }
+  // };
 
   const fetchGPTResponse = async (
     prompt: string,
@@ -128,9 +128,9 @@ export const Call = () => {
             <div>
               <div className={styles.response}>
                 {basicResponse}{' '}
-                <button onClick={() => speak(basicResponse)}>
+                {/* <button onClick={() => speak(basicResponse)}>
                   Czytaj podstawową odpowiedź
-                </button>
+                </button> */}
               </div>
             </div>
           )
@@ -146,9 +146,9 @@ export const Call = () => {
                 <div>
                   <div className={styles.response}>
                     {detailResponse}{' '}
-                    <button onClick={() => speak(detailResponse)}>
+                    {/* <button onClick={() => speak(detailResponse)}>
                       Czytaj szczegółową odpowiedź
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               )
@@ -174,9 +174,9 @@ export const Call = () => {
           <div>
             <div className={styles.response}>
               {followUpResponse}{' '}
-              <button onClick={() => speak(followUpResponse)}>
+              {/* <button onClick={() => speak(followUpResponse)}>
                 Czytaj odpowiedź na pytanie
-              </button>
+              </button> */}
             </div>
           </div>
         )}

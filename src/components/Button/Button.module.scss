@@ -1,8 +1,13 @@
 .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-grow: 1;
   background-color: transparent;
   color: #f4f4f4;
+  fill: #f4f4f4;
   padding: 10px 20px;
-  width: 210px;
   font-size: 18px;
   border: 1px solid#f4f4f4;
   border-radius: 8px;
@@ -10,4 +15,8 @@
   transition:
     background-color 0.3s,
     transform 0.3s;
+  &:disabled {
+    background-color: darkgrey;
+    cursor: not-allowed;
+  }
 }

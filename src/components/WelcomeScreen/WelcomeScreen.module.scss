@@ -56,15 +56,22 @@
   }
 }
 
+@keyframes fadeInUp {
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+
 .animationContainer {
   background-color: #0d1117;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  overflow: hidden; 
-  min-width: 390px;
-  height: 100vh;
+  height: 90vh;
+  overflow: hidden;
 }
 
 .animationContainer img {
@@ -73,32 +80,33 @@
   position: absolute;
 }
 
+.logo {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  margin-bottom: 5%; /* Logo będzie umiejscowione na dole kontenera */
+  left: 50%; /* Centrowanie loga w poziomie */
+  transform: translateX(-50%) translateY(10px); /* Przesunięcie w górę o 10px */
+  opacity: 0; /* Początkowo logo jest niewidoczne */
+  animation: fadeInUp 2s ease 1.5s forwards; /* 2s opóźnienie, 1.5s trwanie */
+}
+
 .appleIcon1 {
-  animation: enterFromTopLeftAndSpin 2s ease forwards;
+  animation: enterFromTopLeftAndSpin 2s ease 1s forwards;
 }
 .appleIcon2 {
-  animation: enterFromBottomLeftAndSpin 1s ease forwards;
+  animation: enterFromBottomLeftAndSpin 2s ease 1s forwards;
 }
 
 .bananaIcon1 {
-  animation: enterFromTopRightAndSpin 2s ease forwards;
+  animation: enterFromTopRightAndSpin 2s ease 1s forwards;
 }
 .bananaIcon2 {
-  animation: enterFromBottomRightAndSpin 2s ease forwards;
+  animation: enterFromBottomRightAndSpin 2s ease 1s forwards;
 }
 .broccoliIcon1 {
-  animation: enterFromTopRightAndSpin 1s ease forwards;
+  animation: enterFromTopRightAndSpin 2s ease 1s forwards;
 }
 .broccoliIcon2 {
-  animation: enterFromBottomLeftAndSpin 2s ease forwards;
-}
-
-.logo {
-  width: 258px;
-  height: auto;
-  position: absolute; /* Jeśli chcesz by logo było względem dolnej krawędzi kontenera, powinno być 'absolute' */
-  bottom: -10px; /* Zamiast podnosić logo, obniżamy je poniżej dolnej krawędzi o 10px */
-  left: 50%;
-  transform: translate(-50%, 10px); /* Przesunięcie logo w poziomie do środka i 10px w dół */
-  animation: slideInFromBottom 1s ease forwards;
+  animation: enterFromBottomLeftAndSpin 2s ease 1s forwards;
 }

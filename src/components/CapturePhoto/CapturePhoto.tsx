@@ -161,7 +161,7 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
               style={{ cursor: 'pointer' }}
               // onClick={handleTakePhoto}
             >
-              <video className={styles.preview} ref={videoRef} autoPlay />
+              <video className={styles.preview} ref={videoRef} muted controls={false}/>
               {/* <p>Kliknij aby zrobić zdjęcie.</p> */}
             </div>
           ) : (

@@ -89,6 +89,11 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
     }
   }
 
+  if (!initCamera) {
+    closeCamera();
+    return null;
+  }
+
   async function takePhotoHandler(
     videoElement: HTMLVideoElement
   ): Promise<Base64> {

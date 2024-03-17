@@ -50,6 +50,12 @@ export const Call = () => {
   ) => {
     setLoadingFunction(true);
     try {
+      if (!textOcr) {
+        setResponseFunction('Musisz dodać zdjęcie zanim zatwierdzisz.');
+        setLoadingFunction(false);
+        return;
+      }
+
       const res = await fetch(
         'https://training.nerdbord.io/api/v1/openai/chat/completions',
         {
@@ -82,7 +88,7 @@ export const Call = () => {
       setResponseFunction(data.choices[0].message.content);
     } catch (error) {
       console.error('Error calling GPT API:', error);
-      setResponseFunction('Error processing your request');
+      setResponseFunction('Wystąpił błąd podczas pobierania odpowiedzi.');
     }
     setLoadingFunction(false);
   };
@@ -135,11 +141,7 @@ export const Call = () => {
             onClick={GetOcrText}
             text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
           />
-          <Button
-            onClick={testowo}
-            disabled={loadingBasic || loadingDetails || loadingFollowUp}
-            text={'ZATWIERDŹ'}
-          />
+          <Button onClick={testowo} text={'ZATWIERDŹ'} />
         </div>
         {loadingBasic ? (
           <Spinner />
@@ -189,16 +191,7 @@ export const Call = () => {
             </div>
           </>
         )}
-        {followUpResponse && (
-          <div>
-            <div className={styles.response}>
-              {followUpResponse}{' '}
-              {/* <button onClick={() => speak(followUpResponse)}>
-                Czytaj odpowiedź na pytanie
-              </button> */}
-            </div>
-          </div>
-        )}
+
         <div className={styles.buttonBox}>
           {!showDetails && basicResponse && (
             <Button

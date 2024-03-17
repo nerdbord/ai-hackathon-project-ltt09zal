@@ -33,7 +33,7 @@ export default async function handler(
         {
           role: 'user',
           content: [
-            { type: 'text', text: 'spróbuj wyodrębnić skład ze zdjęcia etykiety produktu spożywczego poniżej' },
+            { type: 'text', text: 'spróbuj wyodrębnić skład z etykiety produktu poniżej, napisz krótko i na temat!' },
             {
               type: 'image_url',
               image_url: {

@@ -31,7 +31,6 @@ export const Call = () => {
     setBasicResponse,
   } = useStore();
 
-
   const fetchGPTResponse = async (
     prompt: string,
     setResponseFunction: Function,
@@ -76,30 +75,27 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  const responseImg = useCallback(async () => {
+  const responseImg = async () => {
+    setLoadingBasic(true); // Rozpoczęcie ładowania
     console.log(imageUrl);
     try {
       const response = await fetch('/api/vision-ocr', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          url: imageUrl,
-        }),
+        body: JSON.stringify({ url: imageUrl }),
       });
       const data = await response.json();
       console.log('to wyczytal:', data.text);
       setTextOcr(data.text);
-      // testowo();
     } catch (error) {
       console.error('Error calling OpenAI:', error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageUrl]);
+    setLoadingBasic(false); // Zakończenie ładowania
+  };
 
   const ingredients = textOcr;
   // const ingredients =
   //   'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
-
 
   const handleBasicIngredientsSubmit = () => {
     const basicPrompt = `jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu: ${ingredients}. Czy jest zdrowy, czy mam go ograniczać, czy jest szkodliwy itd. dwa krótkie zdania od asystenta, nie rozpisuj się.`;
@@ -148,7 +144,7 @@ export const Call = () => {
       {/* <PhotoUpload /> */}
       {!basicResponse && (
         <Button
-          onClick={responseImg}
+          onClick={responseImg} // bezpośrednie wywołanie responseImg tutaj
           disabled={loadingBasic || loadingDetails || loadingFollowUp}
           text={'ZATWIERDŹ'}
         />
@@ -203,7 +199,6 @@ export const Call = () => {
             <div className={styles.response}>{followUpResponse} </div>
           </div>
         )}
-
 
         <div className={styles.buttonBox}>
           {!showDetails && basicResponse && (

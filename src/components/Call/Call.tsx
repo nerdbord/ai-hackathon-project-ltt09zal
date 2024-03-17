@@ -179,6 +179,19 @@ export const Call = () => {
       />
 
       <div className={styles.responseContainer}>
+
+        <div className={styles.buttonBox}>
+          <Button
+            onClick={GetOcrText}
+            text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+          />
+          <Button
+            onClick={testowo}
+            disabled={textOcr === '' ? true : false}
+            text={'ZATWIERDŹ'}
+          />
+        </div>
+
         {loadingBasic ? (
           <div className={styles.spinner}>Loading...</div>
         ) : (
@@ -219,6 +232,7 @@ export const Call = () => {
             </button>
           </>
         )}
+
         {followUpResponse && (
           <div>
             <div className={styles.response}>{followUpResponse} </div>
@@ -239,6 +253,21 @@ export const Call = () => {
             Skanuj następne
           </button>
         )}
+
+
+        <div className={styles.buttonBox}>
+          {!showDetails && basicResponse && (
+            <Button
+              onClick={() => setShowDetails(true)}
+              disabled={loadingDetails || loadingBasic}
+              text={loadingDetails ? 'Analizuję...' : 'Szczegóły'}
+            />
+          )}
+          {basicResponse && (
+            <Button text={'Skanuj następne'} onClick={handleReset} />
+          )}
+        </div>
+
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Call.module.scss';
 import { useStore } from '@/store/useStore';
+import Button from '../Button/Button';
 
 export const Call = () => {
   const [input, setInput] = useState<string>('');
@@ -12,7 +13,7 @@ export const Call = () => {
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
-  const { initCamera, startOcr, textOcr, setTextOcr } = useStore();
+  const { initCamera, startOcr, textOcr, setTextOcr, setStartOcr, setOpen, open } = useStore();
   // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   // const [selectedVoice, setSelectedVoice] =
   //   useState<SpeechSynthesisVoice | null>(null);
@@ -79,13 +80,19 @@ export const Call = () => {
 
   const ingredients = textOcr;
 
+
+  const GetOcrText = () => {
+    setStartOcr(!startOcr);
+    setOpen(true);
+  };
+
   const handleBasicIngredientsSubmit = () => {
-    const basicPrompt = `Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
+    const basicPrompt = `Odszyfruj i wyodrębnij skład produktu spożywczego z tego tekst: ${ingredients}. A teraz Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
     fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
   };
 
   const handleDetailIngredientsSubmit = () => {
-    const detailPrompt = `Jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
+    const detailPrompt = `Odszyfruj i wyodrębnij skład produktu spożywczego z tego tekst: ${ingredients}. A teraz jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
     fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
   };
 
@@ -114,10 +121,15 @@ export const Call = () => {
 
   return (
     <div className={styles.callContainer}>
-      <button
+            <Button
+                  onClick={GetOcrText}
+                  text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+                />
+      <Button
         onClick={testowo}
         disabled={loadingBasic || loadingDetails || loadingFollowUp}
-      ></button>
+        text={'ZATWIERDŹ'}
+     />
 
       <div className={styles.responseContainer}>
         {loadingBasic ? (

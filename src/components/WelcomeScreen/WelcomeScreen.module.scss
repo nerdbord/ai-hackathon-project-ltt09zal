@@ -70,8 +70,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 90vh;
-  overflow: hidden;
+  height: 100vh;
+  overflow: hidden; 
+  min-width: 390px;
+  height: 100vh;
 }
 
 .animationContainer img {
@@ -108,5 +110,15 @@
   animation: enterFromTopRightAndSpin 2s ease 1s forwards;
 }
 .broccoliIcon2 {
-  animation: enterFromBottomLeftAndSpin 2s ease 1s forwards;
+  animation: enterFromBottomLeftAndSpin 2s ease forwards;
+}
+
+.logo {
+  width: 258px;
+  height: auto;
+  position: absolute; /* Jeśli chcesz by logo było względem dolnej krawędzi kontenera, powinno być 'absolute' */
+  bottom: -10px; /* Zamiast podnosić logo, obniżamy je poniżej dolnej krawędzi o 10px */
+  left: 50%;
+  transform: translate(-50%, 10px); /* Przesunięcie logo w poziomie do środka i 10px w dół */
+  animation: slideInFromBottom 1s ease forwards;
 }

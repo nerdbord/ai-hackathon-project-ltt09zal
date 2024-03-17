@@ -1,11 +1,26 @@
 import { createWorker } from 'tesseract.js';
 
-export default async function ocr(base64Image: string) {
-  const url = `https://api.ocr.space/parse/image`;
+interface Output {
+  ocrText: string;
+  usedApiKeyNo: number;
+}
+
+export default async function ocr(
+  base64Image: string,
+  apiKeyNo: number
+): Promise<Output> {
+  if (!process.env.NEXT_PUBLIC_OCR_API_KEY) {
+    throw new Error(`No api key specified!`);
+  }
+
+  const apiKeys = process.env.NEXT_PUBLIC_OCR_API_KEY.split(',');
+
+  console.log(
+    `Attempt with ${apiKeyNo + 1} API key of total ${apiKeys.length}.`
+  );
 
   const myHeaders = new Headers();
-  myHeaders.append('apikey', 'helloworld');
-
+  myHeaders.append('apikey', apiKeys[apiKeyNo]);
   const formData = new FormData();
   formData.append('language', 'pol');
   formData.append('isOverlayRequired', 'false');
@@ -13,7 +28,7 @@ export default async function ocr(base64Image: string) {
   formData.append('filetype', 'png');
   formData.append('iscreatesearchablepdf', 'false');
   formData.append('issearchablepdfhidetextlayer', 'false');
-
+  const url = `https://api.ocr.space/parse/image`;
   try {
     let response = await fetch(url, {
       method: 'POST',
@@ -21,34 +36,41 @@ export default async function ocr(base64Image: string) {
       body: formData,
     });
 
-    if (!response.ok) {
-      // change api key(10 req per 10 minutes of free tier)
-      console.log("Attempt with second API key")
-      myHeaders.append('apikey', process.env.NEXT_PUBLIC_OCR_API_KEY as string);
+    if (!response.ok && response.status === 403) {
+      // change api key(10 req per 10 minutes of free tier) status: 403
+      if (apiKeyNo > apiKeys.length - 1) {
+        apiKeyNo = 0;
+      } else {
+        apiKeyNo++;
+      }
+      console.log(
+        `Attempt with ${apiKeyNo + 1} API key of total ${apiKeys.length}.`
+      );
+      myHeaders.append('apikey', apiKeys[apiKeyNo]);
       response = await fetch(url, {
         method: 'POST',
         headers: myHeaders,
         body: formData,
       });
-
-      if (!response.ok) {
-        throw new Error(
-          `Request failed with status: ${response.status}. Message: ${response.json}`
-        );
-      }
     }
 
     const data = await response.json();
     let ocrText = data.ParsedResults[0].ParsedText;
+
+    // IF there is no data then try to recognize text using Tesseract OCR
     if (ocrText === '') {
-      // Try to recognize text using Tesseract OCR
       ocrText = await ocrTesseract(base64Image);
     }
-    return ocrText;
+    // When we recognize text using API then return the parsed data
+    return { ocrText: ocrText, usedApiKeyNo: apiKeyNo };
   } catch (error) {
-    const text = await ocrTesseract(base64Image); // Try to recognize text using Tesseract OCR
+    // Try to recognize text using Tesseract OCR after API error
+    const text = await ocrTesseract(base64Image);
     if (text) {
-      return text;
+      return {
+        ocrText: text,
+        usedApiKeyNo: apiKeyNo,
+      };
     }
     throw new Error(`Error proceeding OCR: ${error}`);
   }

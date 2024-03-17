@@ -17,10 +17,10 @@ const WelcomeScreen = () => {
 
   if (showContent) {
     return (
-      <>
-      <Header />
+      <div className={styles.main_wrapper}>
+        <Header />
         <MainScreen />
-      </>
+      </div>
     );
   }
   return (

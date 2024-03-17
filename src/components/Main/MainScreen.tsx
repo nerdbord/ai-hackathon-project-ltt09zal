@@ -25,10 +25,10 @@ const MainScreen = () => {
     initCamera,
   } = useStore();
 
-  const GetOcrText = () => {
-    setStartOcr(!startOcr);
-    setOpen(true);
-  };
+  // const GetOcrText = () => {
+  //   setStartOcr(!startOcr);
+  //   setOpen(true);
+  // };
 
   const handleOpenScan = () => {
     setInitCamera(true);
@@ -104,15 +104,16 @@ const MainScreen = () => {
                 <Close />
               </button>
               <div className={styles.bottomSheet_buttons}>
-                <Button
+                {/* <Button
                   onClick={GetOcrText}
                   text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-                />
-                <Button
+                /> */}
+                {/* <Button
                   text={'zatwierdź'}
                   onClick={() => console.log('zatwierdzone')}
-                />
+                /> */}
               </div>
+              <Call />
             </div>
           </motion.div>
         )}

@@ -12,18 +12,11 @@ export const Header = () => {
   };
   return (
     <div className={styles.wrapper}>
-      <p className={styles.headerText}>
-        ZDROWE<span className={styles.accent}>.</span>INFO
-      </p>
-      <div className={styles.imageSmall} onClick={toggleMenu}>
-        <Image
-          src={'/assets/HC_logo.png'}
-          width={180}
-          height={180}
-          alt="Logo"
-        />
+      {/*       <div className={styles.imageSmall} onClick={toggleMenu}> */}
+      <div className={styles.imageSmall}>
+        <Image src={'/assets/logo.png'} width={300} height={112} alt="Logo" />
       </div>
-      {isActive && (
+      {/* {isActive && (
         <div className={styles.menuBackground}>
           <div className={styles.menu}>
             <ul>
@@ -33,7 +26,7 @@ export const Header = () => {
             </ul>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

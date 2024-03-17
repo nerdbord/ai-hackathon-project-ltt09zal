@@ -77,7 +77,7 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  const ingredients = textOcr
+  const ingredients = textOcr;
 
   const handleBasicIngredientsSubmit = () => {
     const basicPrompt = `Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
@@ -117,9 +117,7 @@ export const Call = () => {
       <button
         onClick={testowo}
         disabled={loadingBasic || loadingDetails || loadingFollowUp}
-      >
-        SKŁAD
-      </button>
+      ></button>
 
       <div className={styles.responseContainer}>
         {loadingBasic ? (

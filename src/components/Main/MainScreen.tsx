@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CapturePhoto from '../CapturePhoto/CapturePhoto';
 import { useStore } from '@/store/useStore';
 import { Call } from '../Call/Call';
+import Close from '../icons/Close';
+import Button from '../Button/Button';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -60,7 +62,7 @@ const MainScreen = () => {
               </div>
               <div className={styles.intro_txt}>
                 <div className={styles.dot}></div>
-                <p>Wykonaj zdjęcie etykiety, ukazujące pełen skład produktu.</p>
+                <p>Zadbaj o oświetlenie do zdjęcia.</p>
               </div>
             </div>
           </div>
@@ -76,7 +78,7 @@ const MainScreen = () => {
             : { opacity: 0, visibility: 'hidden' }
         }
         initial={{ opacity: 0 }}
-        className={styles.scan_box}
+        className={styles.bottomSheet}
         // onClick={() => setOpen(!open)}
       />
       <CapturePhoto />
@@ -88,21 +90,28 @@ const MainScreen = () => {
             animate="open"
             exit="collapsed"
             variants={{
-              open: { y: 0, height: 'auto', opacity: 1 },
+              open: { y: 0, height: 'auto' },
               collapsed: { y: '100%', height: 0 },
             }}
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
-            className={styles.scan_container}
+            className={styles.bottomSheet_container}
           >
-            <div className={styles.scan_content}>
-              <div className={styles.scan_close} onClick={handleCloseScan}>
-                close
-              </div>
-              <div className={styles.scan_list}>
-                <button onClick={GetOcrText}>
-                  {textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-                </button>
-                <Call />
+            <div className={styles.bottomSheet_content}>
+              <button
+                className={styles.bottomSheet_close}
+                onClick={handleCloseScan}
+              >
+                <Close />
+              </button>
+              <div className={styles.bottomSheet_buttons}>
+                <Button
+                  onClick={GetOcrText}
+                  text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+                />
+                <Button
+                  text={'zatwierdź'}
+                  onClick={() => console.log('zatwierdzone')}
+                />
               </div>
             </div>
           </motion.div>

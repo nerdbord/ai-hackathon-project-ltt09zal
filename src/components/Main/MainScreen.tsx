@@ -39,7 +39,8 @@ const MainScreen = () => {
     setInitCamera(false);
     setOpen(false);
   };
-
+  useEffect(() => {
+  }, [imageUrl]);
   return (
     <main className={styles.wrapper}>
       {!open && (
@@ -82,8 +83,7 @@ const MainScreen = () => {
         className={styles.bottomSheet}
         // onClick={() => setOpen(!open)}
       />
-      {/* <CapturePhoto /> */}
-      <img src={imageUrl} alt='siema'/>
+    {imageUrl !== '' &&  <img src={imageUrl} alt='siema'/>}
       <AnimatePresence initial={false}>
         {open && (
           <motion.div

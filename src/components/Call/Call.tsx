@@ -116,7 +116,7 @@ export const Call = () => {
       const data = await response.json();
       console.log(data.text);
       setTextOcr(data.text);
-      testowo();
+      // testowo();
     } catch (error) {
       console.error('Error calling OpenAI:', error);
     }
@@ -138,7 +138,7 @@ export const Call = () => {
   };
 
   const handleDetailIngredientsSubmit = () => {
-    const detailPrompt = `jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 250 znaków.${ingredients}`;
+    const detailPrompt = `jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu: ${ingredients}. Wypisz te najważniejsze dla mojego zdrowia. napisz około 250 znaków.`;
     fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
   };
 
@@ -164,7 +164,12 @@ export const Call = () => {
     setLoadingDetails(false);
     setLoadingFollowUp(false);
   };
-
+  useEffect(() => {
+    if (textOcr) {
+      testowo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textOcr]);
   return (
     <div className={styles.callContainer}>
       {/* <Button

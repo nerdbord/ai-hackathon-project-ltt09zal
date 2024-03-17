@@ -4,7 +4,7 @@ import { supabase } from '../../db/supabaseClient';
 const PhotoUpload = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const [imageUrl, setImageUrl] = useState('');
   const triggerCamera = () => {
     fileInputRef.current?.click();
   };
@@ -20,7 +20,7 @@ const PhotoUpload = () => {
       const file = files[0];
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `photos/${fileName}`;
+      const filePath = `${fileName}`; 
   
       let { error: uploadError } = await supabase.storage
         .from('photos')
@@ -30,12 +30,11 @@ const PhotoUpload = () => {
         throw uploadError;
       }
   
-      // Pobierz publiczny URL przesłanego obrazu
       const { data } = supabase.storage
       
         .from('photos')
         .getPublicUrl(filePath);
-
+        setImageUrl(data.publicUrl);
       const { error: insertError } = await supabase
         .from('photos')
         .insert([
@@ -62,19 +61,19 @@ const PhotoUpload = () => {
 
   return (
     <div>
-      {/* Ten input jest ukryty; zostanie uruchomiony programowo przez przycisk poniżej */}
       <input
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        capture="environment" // Użyj "user" dla kamery przedniej
+        capture="environment"
         onChange={uploadPhoto}
         disabled={uploading}
-        style={{ display: 'none' }} // Ukryj element input
+        style={{ display: 'none' }}
       />
       <button onClick={triggerCamera} disabled={uploading}>
         {uploading ? 'Przesyłanie...' : 'Zrób zdjęcie'}
       </button>
+      {imageUrl && <img src={imageUrl} alt="Uploaded" />}
     </div>
   );
 };

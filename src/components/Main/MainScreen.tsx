@@ -13,8 +13,15 @@ function sleep(ms: number) {
 }
 
 const MainScreen = () => {
-  const { open, setOpen, startOcr, setStartOcr, textOcr, setInitCamera } =
-    useStore();
+  const {
+    open,
+    setOpen,
+    startOcr,
+    setStartOcr,
+    textOcr,
+    setInitCamera,
+    initCamera,
+  } = useStore();
 
   const GetOcrText = () => {
     setStartOcr(!startOcr);
@@ -33,7 +40,6 @@ const MainScreen = () => {
 
   return (
     <main className={styles.wrapper}>
-      <Header />
       {!open && (
         <div className={styles.container}>
           <div className={styles.intro}>

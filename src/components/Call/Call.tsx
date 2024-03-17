@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+'use client'
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Call.module.scss';
 import { useStore } from '@/store/useStore';
 import Button from '../Button/Button';
-import Spinner from '../Spinner/Spinner';
-
+import OpenAI from 'openai';
+import PhotoUpload from '../PhotoUpload/PhotoUpload';
 export const Call = () => {
   const [input, setInput] = useState<string>('');
   const [basicResponse, setBasicResponse] = useState<string>('');
@@ -13,7 +14,9 @@ export const Call = () => {
   const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
-
+  // const [imageUrl, setImageUrl] = useState<string>(
+  //   'https://sdpl.b-cdn.net/17158-large_default/obrazek-obrazki-10paz.jpg'
+  // );
   const {
     initCamera,
     startOcr,
@@ -22,25 +25,37 @@ export const Call = () => {
     setStartOcr,
     setOpen,
     open,
+    imageUrl,
+    setImageUrl
   } = useStore();
-  // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  // const [selectedVoice, setSelectedVoice] =
-  //   useState<SpeechSynthesisVoice | null>(null);
 
-  // useEffect(() => {
-  //   const voiceOptions = speechSynthesis.getVoices();
-  //   setVoices(voiceOptions);
-  //   setSelectedVoice(
-  //     voiceOptions.find((voice) => voice.lang.startsWith('en')) || null
-  //   );
-  // }, []);
+  // const openai = new OpenAI({
+  //   apiKey: process.env.NEXT_PUBLIC_VISION_KEY,
+  // });
 
-  // const speak = (text: string) => {
-  //   if (text && speechSynthesis) {
-  //     const utterance = new SpeechSynthesisUtterance(text);
-  //     utterance.voice = selectedVoice || voices[0];
-  //     speechSynthesis.speak(utterance);
+  // const responseImg = useCallback(async () => {
+  //   try {
+  //     const response = await openai.chat.completions.create({
+  //       model: 'gpt-4-vision-preview',
+  //       messages: [
+  //         {
+  //           role: 'user',
+  //           content: 'co jest na tym obrazku ?',
+  //         },
+  //         {
+  //           role: 'system',
+  //           content: imageUrl,
+  //         },
+  //       ],
+  //     });
+  //     console.log(response.choices[0]);
+  //   } catch (error) {
+  //     console.error('Error calling OpenAI:', error);
   //   }
+  // }, [imageUrl]);
+
+  // const handleSendClick = () => {
+  //   responseImg();
   // };
 
   const fetchGPTResponse = async (
@@ -87,7 +102,29 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  const ingredients = textOcr;
+
+  const responseImg = useCallback(async () => {
+    console.log(imageUrl)
+    try {
+      const response = await fetch('/api/vision-ocr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: imageUrl,
+        }),
+      });
+      const data = await response.json();
+      console.log(data.text);
+      setTextOcr(data.text);
+    } catch (error) {
+      console.error('Error calling OpenAI:', error);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageUrl]);
+
+  // const ingredients = textOcr;
+  const ingredients =
+    'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
 
   const GetOcrText = () => {
     setStartOcr(!startOcr);
@@ -95,7 +132,7 @@ export const Call = () => {
   };
 
   const handleBasicIngredientsSubmit = () => {
-    const basicPrompt = `Odszyfruj i wyodrębnij skład produktu spożywczego z tego tekst: ${ingredients}. A teraz Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
+    const basicPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest zdrowy, czy mam go ograniczać, czy jest c. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
     fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
   };
 
@@ -128,31 +165,27 @@ export const Call = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.callContainer}>
+      <Button
+        onClick={responseImg}
+        text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
+      />
+      {/* <PhotoUpload /> */}
+
+      <Button
+        onClick={testowo}
+        disabled={loadingBasic || loadingDetails || loadingFollowUp}
+        text={'ZATWIERDŹ'}
+      />
+
       <div className={styles.responseContainer}>
-        <div className={styles.buttonBox}>
-          <Button
-            onClick={GetOcrText}
-            text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-          />
-          <Button
-            onClick={testowo}
-            disabled={loadingBasic || loadingDetails || loadingFollowUp}
-            text={'ZATWIERDŹ'}
-          />
-        </div>
         {loadingBasic ? (
-          <Spinner />
+          <div className={styles.spinner}>Loading...</div>
         ) : (
           basicResponse &&
           !followUpResponse && (
             <div>
-              <div className={styles.response}>
-                {basicResponse}{' '}
-                {/* <button onClick={() => speak(basicResponse)}>
-             Czytaj podstawową odpowiedź
-           </button> */}
-              </div>
+              <div className={styles.response}>{basicResponse} </div>
             </div>
           )
         )}
@@ -160,57 +193,52 @@ export const Call = () => {
         {showDetails && !followUpResponse && (
           <>
             {loadingDetails ? (
-              <Spinner />
+              <div className={styles.spinner}>Loading...</div>
             ) : (
               detailResponse &&
               !followUpResponse && (
                 <div>
-                  <div className={styles.response}>
-                    {detailResponse}{' '}
-                    {/* <button onClick={() => speak(detailResponse)}>
-                      Czytaj szczegółową odpowiedź
-                    </button> */}
-                  </div>
+                  <div className={styles.response}>{detailResponse} </div>
                 </div>
               )
             )}
-            <div className={styles.details}>
-              <textarea
-                placeholder="Dopytaj o szczegóły"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                disabled={loadingFollowUp}
-              />
-              <Button
-                text={'Wyślij'}
-                onClick={handleFollowUpQuestionSubmit}
-                disabled={loadingFollowUp || !input}
-              />
-            </div>
+
+            <input
+              className={styles.inputField}
+              type="text"
+              placeholder="Dopytaj o szczegóły"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={loadingFollowUp}
+            />
+            <button
+              onClick={handleFollowUpQuestionSubmit}
+              disabled={loadingFollowUp || !input}
+            >
+              Wyślij pytanie
+            </button>
           </>
         )}
         {followUpResponse && (
           <div>
-            <div className={styles.response}>
-              {followUpResponse}{' '}
-              {/* <button onClick={() => speak(followUpResponse)}>
-                Czytaj odpowiedź na pytanie
-              </button> */}
-            </div>
+            <div className={styles.response}>{followUpResponse} </div>
           </div>
         )}
-        <div className={styles.buttonBox}>
-          {!showDetails && basicResponse && (
-            <Button
-              onClick={() => setShowDetails(true)}
-              disabled={loadingDetails || loadingBasic}
-              text={loadingDetails ? 'Analizuję...' : 'Szczegóły'}
-            />
-          )}
-          {basicResponse && (
-            <Button text={'Skanuj następne'} onClick={handleReset} />
-          )}
-        </div>
+
+        {!showDetails && basicResponse && (
+          <button
+            className={styles.button}
+            onClick={() => setShowDetails(true)}
+            disabled={loadingDetails || loadingBasic}
+          >
+            {loadingDetails ? 'Ładowanie...' : 'Szczegóły'}
+          </button>
+        )}
+        {basicResponse && (
+          <button className={styles.button} onClick={handleReset}>
+            Skanuj następne
+          </button>
+        )}
       </div>
     </div>
   );

@@ -11,6 +11,8 @@ interface StoreProps {
   setTextOcr: (value: string) => void;
   setInitCamera: (value: boolean) => void;
   setCurrApiKey: (value: number) => void;
+  imageUrl: string;
+  setImageUrl: (url: string) => void;
 }
 
 export const useStore = create<StoreProps>((set) => ({
@@ -24,4 +26,6 @@ export const useStore = create<StoreProps>((set) => ({
   setTextOcr: (value) => set({ textOcr: value }),
   setInitCamera: (value) => set({ initCamera: value }),
   setCurrApiKey: (value) => set({ currApiKey: value }),
+  imageUrl: '',
+  setImageUrl: (url) => set({ imageUrl: url }),
 }));

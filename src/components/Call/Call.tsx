@@ -1,0 +1,201 @@
+import React, { useEffect, useState } from 'react';
+import styles from './Call.module.scss';
+
+export const Call = () => {
+  const [input, setInput] = useState<string>('');
+  const [basicResponse, setBasicResponse] = useState<string>('');
+  const [detailResponse, setDetailResponse] = useState<string>('');
+  const [followUpResponse, setFollowUpResponse] = useState<string>('');
+  const [loadingBasic, setLoadingBasic] = useState<boolean>(false);
+  const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
+  const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
+  // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  // const [selectedVoice, setSelectedVoice] =
+  //   useState<SpeechSynthesisVoice | null>(null);
+
+  // useEffect(() => {
+  //   const voiceOptions = speechSynthesis.getVoices();
+  //   setVoices(voiceOptions);
+  //   setSelectedVoice(
+  //     voiceOptions.find((voice) => voice.lang.startsWith('en')) || null
+  //   );
+  // }, []);
+
+  // const speak = (text: string) => {
+  //   if (text && speechSynthesis) {
+  //     const utterance = new SpeechSynthesisUtterance(text);
+  //     utterance.voice = selectedVoice || voices[0];
+  //     speechSynthesis.speak(utterance);
+  //   }
+  // };
+
+  const fetchGPTResponse = async (
+    prompt: string,
+    setResponseFunction: Function,
+    setLoadingFunction: Function
+  ) => {
+    setLoadingFunction(true);
+    try {
+      const res = await fetch(
+        'https://training.nerdbord.io/api/v1/openai/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${process.env.NEXT_PUBLIC_API_KEY_GPT}`,
+          },
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a helpful assistant.',
+              },
+              {
+                role: 'user',
+                content: prompt,
+              },
+            ],
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setResponseFunction(data.choices[0].message.content);
+    } catch (error) {
+      console.error('Error calling GPT API:', error);
+      setResponseFunction('Error processing your request');
+    }
+    setLoadingFunction(false);
+  };
+
+  const ingredients =
+    'przecier pomidorowy 62%, cukier, ocet, sól, skrobia kukurydziana modyfikowana, aromat naturalny. Produkt może zawierać seler.';
+
+  const handleBasicIngredientsSubmit = () => {
+    const basicPrompt = `Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
+    fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
+  };
+
+  const handleDetailIngredientsSubmit = () => {
+    const detailPrompt = `Jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
+    fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
+  };
+
+  const handleFollowUpQuestionSubmit = () => {
+    if (input) {
+      const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje: ${detailResponse}. Użytkownik pyta: "${input}". Proszę udzielić odpowiedzi.`;
+      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
+      setInput('');
+    }
+  };
+
+  const testowo = () => {
+    handleBasicIngredientsSubmit();
+    handleDetailIngredientsSubmit();
+  };
+  const handleReset = () => {
+    setBasicResponse('');
+    setDetailResponse('');
+    setFollowUpResponse('');
+    setShowDetails(false);
+    setInput('');
+    setLoadingBasic(false);
+    setLoadingDetails(false);
+    setLoadingFollowUp(false);
+  };
+
+  return (
+    <div className={styles.callContainer}>
+      <button
+        onClick={testowo}
+        disabled={loadingBasic || loadingDetails || loadingFollowUp}
+      >
+        SKŁAD
+      </button>
+
+      <div className={styles.responseContainer}>
+        {loadingBasic ? (
+          <div className={styles.spinner}>Loading...</div>
+        ) : (
+          basicResponse &&
+          !followUpResponse && (
+            <div>
+              <div className={styles.response}>
+                {basicResponse}{' '}
+                {/* <button onClick={() => speak(basicResponse)}>
+                  Czytaj podstawową odpowiedź
+                </button> */}
+              </div>
+            </div>
+          )
+        )}
+
+        {showDetails && !followUpResponse && (
+          <>
+            {loadingDetails ? (
+              <div className={styles.spinner}>Loading...</div>
+            ) : (
+              detailResponse &&
+              !followUpResponse && (
+                <div>
+                  <div className={styles.response}>
+                    {detailResponse}{' '}
+                    {/* <button onClick={() => speak(detailResponse)}>
+                      Czytaj szczegółową odpowiedź
+                    </button> */}
+                  </div>
+                </div>
+              )
+            )}
+
+            <input
+              className={styles.inputField}
+              type="text"
+              placeholder="Dopytaj o szczegóły"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={loadingFollowUp}
+            />
+            <button
+              onClick={handleFollowUpQuestionSubmit}
+              disabled={loadingFollowUp || !input}
+            >
+              Wyślij pytanie
+            </button>
+          </>
+        )}
+        {followUpResponse && (
+          <div>
+            <div className={styles.response}>
+              {followUpResponse}{' '}
+              {/* <button onClick={() => speak(followUpResponse)}>
+                Czytaj odpowiedź na pytanie
+              </button> */}
+            </div>
+          </div>
+        )}
+
+        {!showDetails && basicResponse && (
+          <button
+            className={styles.button}
+            onClick={() => setShowDetails(true)}
+            disabled={loadingDetails || loadingBasic}
+          >
+            {loadingDetails ? 'Ładowanie...' : 'Szczegóły'}
+          </button>
+        )}
+        {basicResponse && (
+          <button className={styles.button} onClick={handleReset}>
+            Skanuj następne
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};

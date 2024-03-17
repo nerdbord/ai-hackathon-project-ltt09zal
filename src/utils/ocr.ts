@@ -1,45 +1,87 @@
-import { Image } from 'image-js';
 import { createWorker } from 'tesseract.js';
 
-async function ocr(base64Image: string) {
+export default async function ocr(base64Image: string) {
+  const url = `https://api.ocr.space/parse/image`;
+
+  const myHeaders = new Headers();
+  myHeaders.append('apikey', 'helloworld');
+
+  const formData = new FormData();
+  formData.append('language', 'pol');
+  formData.append('isOverlayRequired', 'false');
+  formData.append('base64Image', base64Image.toString());
+  formData.append('filetype', 'png');
+  formData.append('iscreatesearchablepdf', 'false');
+  formData.append('issearchablepdfhidetextlayer', 'false');
+
   try {
-    // Load the image
-    // const decodedString = atob(base64Image);
-    // const byteArray = decodedString.split('').map(char => char.charCodeAt(0));
-    // const image = new Image({ data: byteArray });
-
-    // // Convert to grayscale
-    // image.grey();
-    // image.rotateLeft();
-    // // Apply Gaussian blur for noise reduction
-    // image.gaussianFilter();
-
-    // // Invert the binary image
-    // image.invert();
-
-    // // Get the processed image as base64
-    // const processedImg = image.toDataURL('image/png');
-
-    // console.log("base64Image", base64Image)
-    // console.log("processedImg", processedImg)
-
-    // Recognize text using Tesseract OCR
-    const worker = await createWorker('pol+eng');
-    await worker.setParameters({
-      tessedit_char_whitelist:
-        '0123456789aąbcćdeęfghijklłmnńoóprsśtuwvzźżAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSSTUWVYZŹŻ -:,.?!/',
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: myHeaders,
+      body: formData,
     });
 
-    const {
-      data: { text },
-    } = await worker.recognize(base64Image);
-    await worker.terminate();
+    if (!response.ok) {
+      // change api key(10 req per 10 minutes of free tier)
+      console.log("Attempt with second API key")
+      myHeaders.append('apikey', process.env.NEXT_PUBLIC_OCR_API_KEY as string);
+      response = await fetch(url, {
+        method: 'POST',
+        headers: myHeaders,
+        body: formData,
+      });
 
-    return text ? text : 'Nic nie widzę w tym chmurzu';
+      if (!response.ok) {
+        throw new Error(
+          `Request failed with status: ${response.status}. Message: ${response.json}`
+        );
+      }
+    }
+
+    const data = await response.json();
+    let ocrText = data.ParsedResults[0].ParsedText;
+    if (ocrText === '') {
+      // Try to recognize text using Tesseract OCR
+      ocrText = await ocrTesseract(base64Image);
+    }
+    return ocrText;
   } catch (error) {
-    console.error('Error:', error);
-    return 'Ups, coś nie zesrało 💩';
+    const text = await ocrTesseract(base64Image); // Try to recognize text using Tesseract OCR
+    if (text) {
+      return text;
+    }
+    throw new Error(`Error proceeding OCR: ${error}`);
   }
 }
 
-export default ocr;
+// Proceed ocr with tesseract
+async function ocrTesseract(base64Image: string): Promise<string> {
+  // const processedImage = await preprocessImage(base64Image);
+  const worker = await createWorker();
+  await worker.setParameters({
+    tessedit_char_whitelist:
+      '0123456789aąbcćdeęfghijklłmnńoóprsśtuwvyzźżAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSSTUWVYZŹŻ -:,.?!/',
+  });
+  const {
+    data: { text },
+  } = await worker.recognize(base64Image);
+  await worker.terminate();
+  return text + '\n(generated with Tesseract)';
+}
+
+// Preprocess image (for tesseract)
+async function preprocessImage(base64Image: string): Promise<string> {
+  const response = await fetch('/api/process-image', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      base64Image: base64Image.replace('data:image/png;base64,', ''),
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed with status: ${response.status}`);
+  }
+  const data = await response.json(); // data.img - base64image
+  return data.img;
+}

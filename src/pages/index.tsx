@@ -1,24 +1,13 @@
-import Header from '../components/Header/Header';
-import { Inter } from 'next/font/google';
-import styles from '@/styles/Home.module.scss';
-import WelcomeScreen from '../components/WelcomeScreen/WelcomeScreen';
-import CapturePhoto from '@/components/CapturePhoto/CapturePhoto';
-import Layout from '@/components/Layout/Layout';import { Call } from '@/components/Call'
+import Header from '../components/Header/Header'
+import styles from '@/styles/Home.module.scss'
+import MainScreen from '../components/Main/MainScreen'
+import WelcomeScreen from '@/components/WelcomeScreen/WelcomeScreen'
 
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-inter',
-});
 
 export default function Home() {
-  return (
-    <Layout>
-      <Header />
-      <WelcomeScreen />
-      <CapturePhoto />
-	 <Call />
-    </Layout>
-  );
-}
+	return (
+	  <div className={styles.container}>
+		<WelcomeScreen />
+	  </div>
+	);
+  }

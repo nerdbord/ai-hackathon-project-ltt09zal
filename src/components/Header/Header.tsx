@@ -1,14 +1,23 @@
 import React from 'react';
 import styles from './Header.module.scss';
 import Image from 'next/image';
+import { useStore } from '@/store/useStore';
 
-const Header = () => {
+export const Header = () => {
+  const { open } = useStore();
   return (
     <div className={styles.wrapper}>
-      <div className={styles.image}>
-        <Image src="/assets/logo.png" alt="Logo" width={100} height={100} />
+      <p className={open ? styles.headerText : styles.hidden}>
+        DAJEMY TU JAKIŚ TEKST MORDECZKI?
+      </p>
+      <div className={open ? styles.imageSmall : styles.image}>
+        <Image
+          src={'/assets/HC_logo.png'}
+          width={180}
+          height={180}
+          alt="Logo"
+        />
       </div>
-      <p className={styles.title}>zdrowe info</p>
     </div>
   );
 };

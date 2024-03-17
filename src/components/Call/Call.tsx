@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './Call.module.scss';
 import { useStore } from '@/store/useStore';
 import Button from '../Button/Button';
+import Spinner from '../Spinner/Spinner';
 
 export const Call = () => {
   const [input, setInput] = useState<string>('');
@@ -86,7 +87,7 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
-  /*  const ingredients = textOcr;
+  const ingredients = textOcr;
 
   const GetOcrText = () => {
     setStartOcr(!startOcr);
@@ -106,33 +107,6 @@ export const Call = () => {
   const handleFollowUpQuestionSubmit = () => {
     if (input) {
       const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje: ${detailResponse}. Użytkownik pyta: "${input}". Proszę udzielić odpowiedzi.`;
-      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
-      setInput('');
-    }
-  }; */
-
-  // const ingredients = textOcr;
-  const ingredients =
-    'olej rzepakowy, żółtko jaja 6%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (sól wapniowo-disodowa EDTA), regulator kwasowości (kwas cytrynowy).';
-
-  const GetOcrText = () => {
-    setStartOcr(!startOcr);
-    setOpen(true);
-  };
-
-  const handleBasicIngredientsSubmit = () => {
-    const basicPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest zdrowy, czy mam go ograniczać, czy jest coś niezdrowego itd. dwa krótkie zdania od asystenta, nie rozpisuj się.`;
-    fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
-  };
-
-  const handleDetailIngredientsSubmit = () => {
-    const detailPrompt = `Z poniższego tekstu spróbuj wyodrębnić skład: ${ingredients}. A teraz jako asystent ds. zakupów, podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków`;
-    fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
-  };
-
-  const handleFollowUpQuestionSubmit = () => {
-    if (input) {
-      const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje: ${detailResponse}. Użytkownik pyta o ten produkt: "${input}". Proszę udzielić odpowiedzi.`;
       fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
       setInput('');
     }
@@ -168,7 +142,7 @@ export const Call = () => {
           />
         </div>
         {loadingBasic ? (
-          <div className={styles.spinner}></div>
+          <Spinner />
         ) : (
           basicResponse &&
           !followUpResponse && (
@@ -176,8 +150,8 @@ export const Call = () => {
               <div className={styles.response}>
                 {basicResponse}{' '}
                 {/* <button onClick={() => speak(basicResponse)}>
-                  Czytaj podstawową odpowiedź
-                </button> */}
+             Czytaj podstawową odpowiedź
+           </button> */}
               </div>
             </div>
           )
@@ -186,7 +160,7 @@ export const Call = () => {
         {showDetails && !followUpResponse && (
           <>
             {loadingDetails ? (
-              <div className={styles.spinner}></div>
+              <Spinner />
             ) : (
               detailResponse &&
               !followUpResponse && (
@@ -201,9 +175,7 @@ export const Call = () => {
               )
             )}
             <div className={styles.details}>
-              <input
-                className={styles.inputField}
-                type="text"
+              <textarea
                 placeholder="Dopytaj o szczegóły"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}

@@ -46,8 +46,7 @@ const MainScreen = () => {
           <div className={styles.intro}>
             <h2>
               <strong>
-                Jak skanować dla lepszych wyników{' '}
-                <span className={styles.intro_span}>?</span>
+                Jak skanować <span className={styles.intro_span}>?</span>
               </strong>
             </h2>
             <div className={styles.stepsWrapper}>

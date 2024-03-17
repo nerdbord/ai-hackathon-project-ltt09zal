@@ -90,7 +90,8 @@ export const Call = () => {
     } catch (error) {
       console.error('Error calling OpenAI:', error);
     }
-    setLoadingBasic(false); // Zakończenie ładowania
+    setImageUrl('')
+    setLoadingBasic(false);
   };
 
   const ingredients = textOcr;
@@ -128,6 +129,8 @@ export const Call = () => {
     setLoadingBasic(false);
     setLoadingDetails(false);
     setLoadingFollowUp(false);
+    setImageUrl('')
+    setOpen(false)
   };
   useEffect(() => {
     if (textOcr) {
@@ -137,16 +140,12 @@ export const Call = () => {
   }, [textOcr]);
   return (
     <div className={styles.callContainer}>
-      {/* <Button
-        onClick={responseImg}
-        text={textOcr === '' ? 'ZDJĘCIE' : 'NOWE'}
-      /> */}
-      {/* <PhotoUpload /> */}
+
       {!basicResponse && (
         <Button
           onClick={responseImg} // bezpośrednie wywołanie responseImg tutaj
           disabled={loadingBasic || loadingDetails || loadingFollowUp}
-          text={'ZATWIERDŹ'}
+          text={'ANALIZUJ'}
         />
       )}
 
@@ -157,7 +156,7 @@ export const Call = () => {
           <div className={styles.spinner}>Loading...</div>
         ) : (
           basicResponse &&
-          !followUpResponse && (
+          !followUpResponse && !detailResponse && (
             <div>
               <div className={styles.response}>{basicResponse} </div>
             </div>

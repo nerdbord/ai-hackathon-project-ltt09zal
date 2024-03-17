@@ -12,7 +12,6 @@ const PhotoUpload = ({ onClick }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { setImageUrl, textOcr, setOpen } = useStore();
   const triggerCamera = () => {
-
     fileInputRef.current?.click();
   };
 
@@ -38,9 +37,9 @@ const PhotoUpload = ({ onClick }: Props) => {
       }
 
       const { data } = supabase.storage.from('photos').getPublicUrl(filePath);
-      console.log('Public URL:', data.publicUrl); 
+      console.log('Public URL:', data.publicUrl);
       setImageUrl(data.publicUrl);
-      setOpen(true)
+      setOpen(true);
       const { error: insertError } = await supabase.from('photos').insert([
         {
           url: data.publicUrl,
@@ -50,8 +49,6 @@ const PhotoUpload = ({ onClick }: Props) => {
       if (insertError) {
         throw insertError;
       }
-
-
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -75,13 +72,7 @@ const PhotoUpload = ({ onClick }: Props) => {
         style={{ display: 'none' }}
       />
       <Button
-        text={
-          uploading
-            ? 'PRZESYŁANIE...'
-            : textOcr === ''
-              ? 'ZRÓB ZDJĘCIE'
-              : 'NOWE'
-        }
+        text={uploading ? 'PRZESYŁANIE...' : 'ZRÓB ZDJĘCIE'}
         onClick={triggerCamera}
         disabled={uploading}
       />

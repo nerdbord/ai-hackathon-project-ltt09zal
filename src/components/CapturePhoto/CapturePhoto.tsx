@@ -33,70 +33,64 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
     } else {
       setTextOcr('');
       setBase64img('');
-      setIsCameraOpen(false);
       closeCamera();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initCamera]);
 
   useEffect(() => {
-    if (!isCameraOpen && initCamera) {
+    isCameraOpen && initializeCamera();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCameraOpen]);
+
+  useEffect(() => {
+    if (!videoRef.current) {
       setTextOcr('');
       setBase64img('');
       setIsCameraOpen(true);
-    }
-
-    if (isCameraOpen && initCamera) {
+      initializeCamera();
+    } else {
       handleTakePhoto();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startOcr]);
 
   useEffect(() => {
-    initCamera && base64img !== '' && textOcr === '' && analizePhoto();
+    base64img !== '' && textOcr === '' && analizePhoto();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [base64img]);
 
-  useEffect(() => {
+  async function initializeCamera() {
     let videoElement = videoRef.current;
-    async function initializeCamera() {
-      try {
-        if (videoElement) {
-          const mediaStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: 'environment' } },
-            audio: false,
-          });
-          videoElement.srcObject = mediaStream;
-          videoElement.play();
-          setIsCameraOpen(true);
+    try {
+      if (videoElement) {
+        // Clear video if existing
+        const mediaStreamRef = videoElement.srcObject as MediaStream;
+        if (mediaStreamRef) {
+          mediaStreamRef.getTracks().forEach((track) => track.stop());
         }
-      } catch (error) {
-        console.error('Error accessing camera:', error);
+        console.log('Starting camera');
+        const mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' } },
+          audio: false,
+        });
+        videoElement.srcObject = mediaStream;
+        videoElement.play();
       }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
     }
-
-    if (isCameraOpen) {
-      initializeCamera();
-    }
-
-    return () => {
-      closeCamera();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCameraOpen]);
+  }
 
   function closeCamera() {
     if (videoRef.current) {
       const mediaStream = videoRef.current.srcObject as MediaStream;
       if (mediaStream) {
         mediaStream.getTracks().forEach((track) => track.stop());
+        console.log('Closing camera');
+        setIsCameraOpen(false);
       }
     }
-  }
-
-  if (!initCamera) {
-    closeCamera();
-    return null;
   }
 
   async function takePhotoHandler(
@@ -125,7 +119,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   }
 
   async function handleTakePhoto(): Promise<void> {
-    setIsCameraOpen(false);
     closeCamera();
     try {
       if (videoRef.current) {
@@ -140,7 +133,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   const analizePhoto = async (): Promise<void> => {
     setLoading(true);
     if (base64img !== 'data:,') {
-      
       try {
         const { ocrText, usedApiKeyNo } = await ocr(base64img, currApiKey);
         console.log(ocrText);
@@ -154,15 +146,16 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
       } catch (error) {
         console.error('Error fetching OCR results:', error);
       }
-    }else{
-      setBase64img('')
-      setIsCameraOpen(true);
+    } else {
+      setBase64img('');
     }
     setLoading(false);
   };
-
+  console.log(base64img);
   return (
     <div className={styles.container}>
+      <p>{initCamera ? 'initCamera true' : 'initCamera false'}</p>
+      <p>{isCameraOpen ? 'camera open' : 'camera closed'}</p>
       {base64img === '' ? (
         <>
           {/* View with open camera - ready to take a shot! */}
@@ -204,7 +197,6 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
             <div className={styles.buttonsContainer}>
               <button
                 onClick={() => {
-                  setIsCameraOpen(true);
                   setBase64img('');
                   setTextOcr('');
                 }}

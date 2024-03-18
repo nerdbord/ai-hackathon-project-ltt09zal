@@ -172,6 +172,10 @@ export const Call = () => {
                 </div>
               )
             )}
+
+            {followUpResponse && (
+              <div className={styles.response}>{followUpResponse} </div>
+            )}
             <div className={styles.details}>
               <textarea
                 placeholder="Dopytaj o szczegóły"

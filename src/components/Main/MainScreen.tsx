@@ -22,6 +22,12 @@ const MainScreen = () => {
     textOcr,
     setInitCamera,
     initCamera,
+    basicResponse,
+    setBasicResponse,
+    setDetailResponse,
+    setFollowUpResponse,
+    detailResponse,
+    followUpResponse,
   } = useStore();
 
   // const GetOcrText = () => {
@@ -37,6 +43,9 @@ const MainScreen = () => {
   const handleCloseScan = () => {
     setInitCamera(false);
     setOpen(false);
+    setBasicResponse('')
+    setDetailResponse('')
+    setFollowUpResponse('')
   };
 
   return (
@@ -96,11 +105,13 @@ const MainScreen = () => {
           >
             <div className={styles.bottomSheet_content}>
               <Call />
-              <Button
-                onClick={handleCloseScan}
-                text={'Anuluj'}
-                icon={<Close />}
-              />
+              {!basicResponse && !detailResponse && !followUpResponse && (
+                <Button
+                  onClick={handleCloseScan}
+                  text={'Anuluj'}
+                  icon={<Close />}
+                />
+              )}
             </div>
           </motion.div>
         )}

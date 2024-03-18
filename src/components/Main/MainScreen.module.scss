@@ -84,6 +84,8 @@
     border-top-left-radius: 3rem;
     border-top-right-radius: 3rem;
     overflow-y: auto;
+    max-height: 560px;
+
   }
 
   &_content {
@@ -92,6 +94,7 @@
     align-items: center;
     gap: 1rem;
     position: relative;
+    max-height: 560px;
   }
 
   &_close {

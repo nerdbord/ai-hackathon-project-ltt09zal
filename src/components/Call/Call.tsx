@@ -6,9 +6,7 @@ import styles from './Call.module.scss';
 
 export const Call = () => {
   const [input, setInput] = useState<string>('');
-  const [basicResponse, setBasicResponse] = useState<string>('');
-  const [detailResponse, setDetailResponse] = useState<string>('');
-  const [followUpResponse, setFollowUpResponse] = useState<string>('');
+
   const [loadingBasic, setLoadingBasic] = useState<boolean>(false);
   const [loadingDetails, setLoadingDetails] = useState<boolean>(false);
   const [loadingFollowUp, setLoadingFollowUp] = useState<boolean>(false);
@@ -22,26 +20,17 @@ export const Call = () => {
     setStartOcr,
     setOpen,
     open,
+    basicResponse,
+    setBasicResponse,
+    setDetailResponse,
+    setFollowUpResponse,
+    detailResponse,
+    followUpResponse,
+    setInitCamera,
+    setBase64img,
+    isCameraOpen,
+    setIsCameraOpen,
   } = useStore();
-  // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  // const [selectedVoice, setSelectedVoice] =
-  //   useState<SpeechSynthesisVoice | null>(null);
-
-  // useEffect(() => {
-  //   const voiceOptions = speechSynthesis.getVoices();
-  //   setVoices(voiceOptions);
-  //   setSelectedVoice(
-  //     voiceOptions.find((voice) => voice.lang.startsWith('en')) || null
-  //   );
-  // }, []);
-
-  // const speak = (text: string) => {
-  //   if (text && speechSynthesis) {
-  //     const utterance = new SpeechSynthesisUtterance(text);
-  //     utterance.voice = selectedVoice || voices[0];
-  //     speechSynthesis.speak(utterance);
-  //   }
-  // };
 
   const fetchGPTResponse = async (
     prompt: string,
@@ -93,35 +82,44 @@ export const Call = () => {
     setLoadingFunction(false);
   };
 
+  // const ingredients =
+  //   'Składniki: olej rzepakowy, żółtko jaja 6,0%, ocet, musztarda (woda, gorczyca, ocet, sól, cukier, przyprawy, aromat), cukier, sól, przyprawy, przeciwutleniacz (E385), regulator kwasowości (kwas cytrynowy).';
   const ingredients = textOcr;
 
   const GetOcrText = () => {
+    0;
     setStartOcr(!startOcr);
     setOpen(true);
   };
 
   const handleBasicIngredientsSubmit = () => {
-    const basicPrompt = `Odszyfruj i wyodrębnij skład produktu spożywczego z tego tekst: ${ingredients}. A teraz Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa krótkie zdania od asystenta, nie rozpisuj się. wyodrębnij skład z tego tekstu: ${ingredients}`;
+    const basicPrompt = `spróbuj wyodrębnić z tego tekstu skład produktu spożywczego: ${ingredients}. A teraz Jesteś asystentem ds. zakupów, napisz mi coś krótko na temat tego składu, czy jest ok, czy ograniczać, czy jest zdrowy. dwa - trzy krótkie zdania, nie rozpisuj się.`;
     fetchGPTResponse(basicPrompt, setBasicResponse, setLoadingBasic);
   };
 
   const handleDetailIngredientsSubmit = () => {
-    const detailPrompt = `Odszyfruj i wyodrębnij skład produktu spożywczego z tego tekst: ${ingredients}. A teraz jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu najważniejsze dla mojego zdrowia. napisz około 400 znaków ${ingredients}`;
+    const detailPrompt = `spróbuj wyodrębnić z tego tekstu skład produktu spożywczego: ${ingredients}. A teraz jako asystent do spraw zakupów podaj mi szczegóły na temat tego składu, składników, najważniejsze dla mojego zdrowia itd. napisz około 300 znaków ${ingredients}`;
     fetchGPTResponse(detailPrompt, setDetailResponse, setLoadingDetails);
   };
 
   const handleFollowUpQuestionSubmit = () => {
-    if (input) {
-      const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje: ${detailResponse}. Użytkownik pyta: "${input}". Proszę udzielić odpowiedzi.`;
-      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
-      setInput('');
-    }
+
+      const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje na temat produktu: ${detailResponse}. Użytkownik pyta: "${input}". Proszę udzielić odpowiedzi.`;
+      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);    
   };
 
   const testowo = () => {
     handleBasicIngredientsSubmit();
     handleDetailIngredientsSubmit();
   };
+
+  const resetCamera = () => {
+    setTextOcr('');
+    setBase64img('');
+    setInitCamera(true);
+    setIsCameraOpen(true);
+  };
+
   const handleReset = () => {
     setBasicResponse('');
     setDetailResponse('');
@@ -131,6 +129,7 @@ export const Call = () => {
     setLoadingBasic(false);
     setLoadingDetails(false);
     setLoadingFollowUp(false);
+    resetCamera();
   };
 
   return (
@@ -141,24 +140,20 @@ export const Call = () => {
             onClick={GetOcrText}
             text={textOcr === '' ? 'ZRÓB ZDJĘCIE' : 'POWTÓRZ'}
           />
-          <Button 
-          onClick={testowo} 
-          text={'WYŚLIJ'}
-          hidden={textOcr === '' ? true : false }
-           />
+          <Button
+            onClick={testowo}
+            text={'WYŚLIJ'}
+            hidden={textOcr === '' ? true : false}
+          />
         </div>
         {loadingBasic ? (
           <Spinner />
         ) : (
-          basicResponse && !detailResponse &&
+          basicResponse &&
+          !showDetails &&
           !followUpResponse && (
             <div>
-              <div className={styles.response}>
-                {basicResponse}{' '}
-                {/* <button onClick={() => speak(basicResponse)}>
-             Czytaj podstawową odpowiedź
-           </button> */}
-              </div>
+              <div className={styles.response}>{basicResponse} </div>
             </div>
           )
         )}
@@ -171,15 +166,12 @@ export const Call = () => {
               detailResponse &&
               !followUpResponse && (
                 <div>
-                  <div className={styles.response}>
-                    {detailResponse}{' '}
-                    {/* <button onClick={() => speak(detailResponse)}>
-                      Czytaj szczegółową odpowiedź
-                    </button> */}
-                  </div>
+                  <div className={styles.response}>{detailResponse} </div>
                 </div>
               )
             )}
+
+      
             <div className={styles.details}>
               <textarea
                 placeholder="Dopytaj o szczegóły"
@@ -195,7 +187,9 @@ export const Call = () => {
             </div>
           </>
         )}
-
+      {followUpResponse && (
+              <div className={styles.response}>{followUpResponse}</div>
+            )}
         <div className={styles.buttonBox}>
           {!showDetails && basicResponse && (
             <Button

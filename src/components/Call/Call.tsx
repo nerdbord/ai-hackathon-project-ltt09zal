@@ -103,11 +103,9 @@ export const Call = () => {
   };
 
   const handleFollowUpQuestionSubmit = () => {
-    if (input) {
+
       const followUpPrompt = `Biorąc pod uwagę poprzednie szczegółowe informacje na temat produktu: ${detailResponse}. Użytkownik pyta: "${input}". Proszę udzielić odpowiedzi.`;
-      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);
-      setInput('');
-    }
+      fetchGPTResponse(followUpPrompt, setFollowUpResponse, setLoadingFollowUp);    
   };
 
   const testowo = () => {
@@ -174,7 +172,7 @@ export const Call = () => {
             )}
 
             {followUpResponse && (
-              <div className={styles.response}>{followUpResponse} </div>
+              <div className={styles.response}>{followUpResponse}</div>
             )}
             <div className={styles.details}>
               <textarea

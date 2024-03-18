@@ -26,6 +26,7 @@ export const Call = () => {
     setFollowUpResponse,
     detailResponse,
     followUpResponse,
+    setInitCamera
   } = useStore();
 
   const fetchGPTResponse = async (
@@ -120,6 +121,7 @@ export const Call = () => {
     setLoadingDetails(false);
     setLoadingFollowUp(false);
     setTextOcr('')
+    setInitCamera(true)
   };
 
   return (

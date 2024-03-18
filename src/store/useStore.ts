@@ -19,6 +19,8 @@ interface StoreProps {
   setFollowUpResponse: (value: string) => void;
   base64img: string;
   setBase64img: (value: string) => void;
+  isCameraOpen: boolean;
+  setIsCameraOpen: (isCameraOpen: boolean) => void;
 }
 
 export const useStore = create<StoreProps>((set) => ({
@@ -40,4 +42,6 @@ export const useStore = create<StoreProps>((set) => ({
   setDetailResponse: (value) => set({ detailResponse: value }),
   setFollowUpResponse: (value) => set({ followUpResponse: value }),
   setBase64img: (value) => set({ base64img: value }),
+  isCameraOpen: false,
+  setIsCameraOpen: (value) => set({ isCameraOpen: value }),
 }));

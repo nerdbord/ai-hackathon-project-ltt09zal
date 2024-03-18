@@ -14,7 +14,7 @@ interface Props {
 
 const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const {
@@ -26,6 +26,8 @@ const CapturePhoto: React.FC<Props> = ({ enableControls = false }) => {
     setCurrApiKey,
     base64img,
     setBase64img,
+    isCameraOpen,
+    setIsCameraOpen,
   } = useStore();
 
   useEffect(() => {

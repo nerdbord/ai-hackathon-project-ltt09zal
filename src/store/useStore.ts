@@ -17,6 +17,8 @@ interface StoreProps {
   setDetailResponse: (value: string) => void;
   followUpResponse: string;
   setFollowUpResponse: (value: string) => void;
+  base64img: string;
+  setBase64img: (value: string) => void;
 }
 
 export const useStore = create<StoreProps>((set) => ({
@@ -33,7 +35,9 @@ export const useStore = create<StoreProps>((set) => ({
   basicResponse: '',
   detailResponse: '',
   followUpResponse: '',
+  base64img: '',
   setBasicResponse: (value) => set({ basicResponse: value }),
   setDetailResponse: (value) => set({ detailResponse: value }),
   setFollowUpResponse: (value) => set({ followUpResponse: value }),
+  setBase64img: (value) => set({ base64img: value }),
 }));

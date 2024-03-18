@@ -26,7 +26,8 @@ export const Call = () => {
     setFollowUpResponse,
     detailResponse,
     followUpResponse,
-    setInitCamera
+    setInitCamera,
+    setBase64img
   } = useStore();
 
   const fetchGPTResponse = async (
@@ -111,6 +112,13 @@ export const Call = () => {
     handleBasicIngredientsSubmit();
     handleDetailIngredientsSubmit();
   };
+
+  const resetCamera = () => {
+    setTextOcr('');
+    setBase64img('');
+    setInitCamera(true); // Włącz kamerę
+  };
+
   const handleReset = () => {
     setBasicResponse('');
     setDetailResponse('');
@@ -120,8 +128,7 @@ export const Call = () => {
     setLoadingBasic(false);
     setLoadingDetails(false);
     setLoadingFollowUp(false);
-    setTextOcr('')
-    setInitCamera(true)
+    resetCamera()
   };
 
   return (
